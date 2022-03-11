@@ -3,7 +3,7 @@ import { OAuth2Client } from "google-auth-library";
 import { drive_v3, google } from "googleapis";
 import path from "path";
 import { FileNode } from "../folderTreeStructure/node";
-import { MediaType, MimeTypes, Nullable, __maindir } from "../globals";
+import { clg, MediaType, MimeTypes, Nullable, __maindir } from "../globals";
 import { getModificationTimeFromFile } from "./fileModT";
 import { readJSONFile } from "./handleJSON";
 import { actions, resultHandler } from "./logs";
@@ -99,7 +99,7 @@ export async function uploadFile(node: FileNode): Promise<void> {
 	);
 	if (node.id == null) return node.parent?.removeNode(node);
 
-	console.log(clc.blueBright("Uploaded file: ") + clc.yellowBright(node.location));
+	clg(clc.blueBright("Uploaded file: ") + clc.yellowBright(node.location));
 	node.bupTime = Date.now();
 	node.modTime = modTime;
 }

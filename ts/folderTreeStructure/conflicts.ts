@@ -1,4 +1,4 @@
-import { Nullable } from "../globals";
+import { clg, Nullable } from "../globals";
 import { relocateFile, removeFile } from "../utils/driveQueries";
 import { FileNode } from "./node";
 
@@ -70,7 +70,7 @@ async function relocationConflicts() {
 	for (const node of conflicts.remove) {
 		const prevLoc = node.location;
 		if (!node.isLeaf && checkRelocation(node)) {
-			console.log("Relocating node:" + prevLoc + " to " + node.location);
+			clg("Relocating node:" + prevLoc + " to " + node.location);
 			await relocateFile(node);
 		} else relocNodesArr.push(node);
 	}
@@ -80,7 +80,7 @@ async function relocationConflicts() {
 async function removeConflicts() {
 	for (const node of conflicts.remove) {
 		node.parent?.removeNode(node);
-		console.log("Removing: " + node.location);
+		clg("Removing: " + node.location);
 		await removeFile(node.id);
 	}
 }

@@ -2,20 +2,27 @@ import path from "path";
 import { argv } from "process";
 import { generateTree, JSONFromTree } from "./folderTreeStructure/createTreeStructure";
 import { FileNode } from "./folderTreeStructure/node";
-import { BackupFile, sleep, __maindir } from "./globals";
+import { BackupFile, clg, setSilentConsole, sleep, __maindir } from "./globals";
 import { initAuth } from "./utils/auth";
 import { createFolder, folderExists, setDrive, uploadFile, uploadFolder } from "./utils/driveQueries";
 import { readJSONFile, writeJSONFile } from "./utils/handleJSON";
 import clc from "cli-color";
+import { setSilentLogs } from "./utils/logs";
 
 const checkArgs = (): boolean => {
 	if (argv.length < 3) {
-		console.log("You need to specify you folder's path to backup");
+		console.log("You need to specify your folder's path to backup");
 		return false;
 	}
 	if (!path.isAbsolute(argv[2])) {
 		console.log("You need to give the absolute path of your backup");
 		return false;
+	}
+	if (argv.length > 3) {
+		for (let i = 3; i < argv.length; i++) {
+			if (argv[i] === "-ls") setSilentLogs();
+			if (argv[i] === "-s") setSilentConsole();
+		}
 	}
 	return true;
 };
@@ -49,17 +56,17 @@ async function getBackupId(backupFile: BackupFile, dir: string) {
 	let id = backupFile.id[dir];
 	const exists = await folderExists(id);
 	if (!exists) {
-		console.log(clc.blueBright("Backup folder wasn't found.\nCreating one right now..."));
+		clg(clc.blueBright("Backup folder wasn't found.\tCreating one right now..."));
 		id = backupFile.id[dir] = await createFolder({ name: path.basename(dir) });
 		await writeJSONFile(__maindir + "json/backupFile.json", backupFile);
-	} else console.log(clc.blueBright("Found backup in Google Drive: " + path.basename(dir)));
+	} else clg(clc.blueBright("Found backup in Google Drive: " + path.basename(dir)));
 	return id;
 }
 
 async function backup(tree: FileNode) {
 	let queue: FileNode[] = [tree];
 	let queueSize = 0;
-	console.log(clc.greenBright("==========Start Uploading=========="));
+	clg(clc.greenBright("==========Start Uploading=========="));
 	let t = performance.now();
 	while (true) {
 		if (queueSize === 15) {
@@ -78,7 +85,7 @@ async function backup(tree: FileNode) {
 			queueSize--;
 		});
 	}
-	console.log(clc.greenBright("==========Done Uploading==========="));
-	console.log(`It took ${((performance.now() - t) / 1000).toFixed(2)} seconds to upload.`);
+	clg(clc.greenBright("==========Done Uploading==========="));
+	clg(`It took ${((performance.now() - t) / 1000).toFixed(2)} seconds to upload.`);
 	await JSONFromTree(tree);
 }

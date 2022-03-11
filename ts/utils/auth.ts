@@ -3,7 +3,7 @@ import readline from "readline";
 import { actions, resultHandler } from "./logs";
 import { google } from "googleapis";
 import { Credentials, OAuth2Client } from "google-auth-library";
-import { __maindir } from "../globals";
+import { clg, __maindir } from "../globals";
 import { promisify } from "util";
 import clc from "cli-color";
 
@@ -25,16 +25,11 @@ type LocalCredentials = {
 };
 
 export async function initAuth(): Promise<OAuth2Client | void> {
-	let err: any, credentials;
+	let err: any, credentials: any;
 	try {
 		const { expiry_date } = JSON.parse(await fs.readFile(TOKEN_PATH, { encoding: "utf-8" }));
 		if (Date.now() >= expiry_date) await fs.unlink(TOKEN_PATH);
-	} catch (error) {
-		err = error;
-	} finally {
-		resultHandler(actions.READ_LOC_FILE, err);
-		err = null;
-	}
+	} catch (error) {}
 	try {
 		//I want this to run even if the above trycatch catches an error
 		credentials = await fs.readFile(__maindir + "json/credentials.json", { encoding: "utf8" });
@@ -93,7 +88,7 @@ async function getAccessToken(oAuth2Client: OAuth2Client): Promise<void> {
 		oAuth2Client.setCredentials(token);
 		// Store the token to disk for later program executions
 		await fs.writeFile(TOKEN_PATH, JSON.stringify(token, null, 2), { encoding: "utf-8" });
-		console.log(clc.yellow("Token stored to", __maindir + "json/token.json"));
+		clg(clc.yellow("Token stored to", __maindir + "json/token.json"));
 	} catch (error) {
 		resultHandler(actions.WRITE_LOC_FILE, error);
 	}

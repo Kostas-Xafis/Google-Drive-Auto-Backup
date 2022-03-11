@@ -17,7 +17,13 @@ export const enum actions {
 
 type Error = Nullable<object> | unknown;
 
-const updateLogs = (action: string, err: Error): void => {
+let silent = false;
+
+export function setSilentLogs() {
+	silent = true;
+}
+
+function updateLogs(action: string, err: Error): void {
 	const str =
 		"==========================================\n" +
 		Date() +
@@ -29,11 +35,13 @@ const updateLogs = (action: string, err: Error): void => {
 	fs.appendFile(__maindir + "/logs.log", str, { encoding: "utf-8" }, err => {
 		if (err) console.log(err);
 	});
-};
+}
 
-export const resultHandler = (id: string, err?: Error): void => {
-	if (err != null) {
+export function resultHandler(id: string, err?: Error): void {
+	if (!err && !silent) {
+		updateLogs("SUCCESSFUL action " + id, null);
+	} else {
 		updateLogs("ERROR at action " + id, err);
 		console.log(clc.redBright("An error occured with action: ") + id);
-	} else updateLogs("SUCCESSFUL action " + id, null);
-};
+	}
+}

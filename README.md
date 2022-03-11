@@ -53,3 +53,5 @@
 ## **3. Download**
     node download <The-directory-to-download> <The-destination-to-install-it>
 
+# **Bugs**
+### If any unexpected **error** occurs then post an issue with the resulted error from the generated **logs.log** file (But remove any sensitive data first). Make sure
