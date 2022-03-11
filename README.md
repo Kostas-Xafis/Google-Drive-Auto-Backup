@@ -38,6 +38,22 @@
 }
 ```
 ---
+### **4.** Add a file named backupFile.json in the /json folder. Here you can add any glob pattern to exlude from your backup. You can have a general one or specify one for your backup's directory.
+```json
+{
+  "excludePatterns": {
+      "*": ["**/node_modules", "etc..."],
+      "C:\\Users\\My_name\\personal\\projects\\etc...": [
+          "**/.env",
+          "**/.vscode",
+          "**/target",
+          "etc..."
+      ]
+  },
+  "id": {}
+}
+```
+---
 # **Run**
     # Go inside the generated js folder
     cd js
@@ -50,8 +66,8 @@
     node reset <The-directory-to-remove>
     #2.Both Locally and in Drive
     node reset <The-directory-to-remove> -d
-## **3. Download**
+## **3. Download** 
     node download <The-directory-to-download> <The-destination-to-install-it>
 
 # **Bugs**
-### If any unexpected **error** occurs then post an issue with the resulted error from the generated **logs.log** file (But remove any sensitive data first). Make sure
+### If any unexpected **error** occurs then post an issue with the resulted error from the generated **logs.log** file (But remove any sensitive data first).

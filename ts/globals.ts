@@ -3,7 +3,7 @@ import { resolve } from "path";
 export type Nullable<T> = T | null | undefined;
 
 export type BackupFile = {
-	excludePatterns: string[];
+	excludePatterns: { [k: string]: string[] };
 	id: { [k: string]: string };
 };
 

@@ -15,7 +15,7 @@ type CompleteTree = {
 
 const createTree = async (location: string): Promise<FileNode> => {
 	const backup: BackupFile = await readJSONFile(__maindir + "json/backupFile.json");
-	excludePatterns = backup.excludePatterns;
+	excludePatterns = backup.excludePatterns[location] || backup.excludePatterns["*"] || [];
 	const root: FileNode = new FileNode({
 		id: backup.id[location],
 		parent: null,
