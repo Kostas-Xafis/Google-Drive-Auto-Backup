@@ -73,7 +73,7 @@ node reset <directory-to-remove> -d
 ```
 ## **3. Download**
 ```bash
-node download <directory-to-download> <The-destination-to-install-it>
+node download <directory-to-download> <destination-to-install-it>
 ```
 ## **4. Other**
 ```bash
