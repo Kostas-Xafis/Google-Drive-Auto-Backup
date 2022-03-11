@@ -3,14 +3,14 @@ import { OAuth2Client } from "google-auth-library";
 import { drive_v3, google } from "googleapis";
 import path from "path";
 import { FileNode } from "../folderTreeStructure/node";
-import { clg, MediaType, MimeTypes, Nullable, __maindir } from "../globals";
+import { silentConsole, MediaType, MimeTypes, Nullable, __maindir } from "../globals";
 import { getModificationTimeFromFile } from "./fileModT";
 import { readJSONFile } from "./handleJSON";
 import { actions, resultHandler } from "./logs";
 import clc from "cli-color";
 
 let drive: drive_v3.Drive;
-
+const { clg } = silentConsole;
 const mimeTypes: MimeTypes = {};
 (async function () {
 	Object.assign({}, await readJSONFile(__maindir + "json/mimetypes.json"));

@@ -10,6 +10,7 @@ type nodeConstructor<T> = {
 	isLeaf: boolean; // Basically if it's a file or a folder
 	bupTime?: Nullable<number>; //The time that the file was backuped
 	modTime?: Nullable<number>; //The time that the file was locally modified
+	size: number;
 };
 
 type FileConstructor = nodeConstructor<FileNode>;
@@ -42,6 +43,7 @@ export class FileNode {
 
 	modTime: Nullable<number>;
 	bupTime: Nullable<number>;
+	size: number;
 	constructor(arg: FileConstructor) {
 		this.parent = arg.parent;
 		this.children = arg?.children ? arg.children : [];
@@ -50,8 +52,9 @@ export class FileNode {
 		this.location = arg.location;
 		this.leafs = arg?.leafs ? arg.leafs : [];
 		this.isLeaf = arg.isLeaf;
-		this.modTime = arg?.modTime;
-		this.bupTime = arg?.bupTime;
+		this.modTime = arg.modTime;
+		this.bupTime = arg.bupTime;
+		this.size = arg.size;
 	}
 
 	appendNode(node: FileNode): void {
@@ -129,6 +132,7 @@ export class JSONFileNode {
 
 	modTime: Nullable<number>;
 	bupTime: Nullable<number>;
+	size: number;
 	constructor(arg: JSONConstructor) {
 		this.parent = arg.parent;
 		this.children = arg?.children ? arg.children : [];
@@ -137,8 +141,9 @@ export class JSONFileNode {
 		this.location = arg.location;
 		this.leafs = arg?.leafs ? arg.leafs : [];
 		this.isLeaf = arg.isLeaf;
-		this.modTime = arg?.modTime;
-		this.bupTime = arg?.bupTime;
+		this.modTime = arg.modTime;
+		this.bupTime = arg.bupTime;
+		this.size = arg.size;
 	}
 
 	private static cb(node: FileNode, parent: number): number {

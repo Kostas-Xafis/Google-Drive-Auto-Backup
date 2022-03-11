@@ -3,7 +3,7 @@ import readline from "readline";
 import { actions, resultHandler } from "./logs";
 import { google } from "googleapis";
 import { Credentials, OAuth2Client } from "google-auth-library";
-import { clg, __maindir } from "../globals";
+import { silentConsole, __maindir } from "../globals";
 import { promisify } from "util";
 import clc from "cli-color";
 
@@ -13,7 +13,7 @@ const SCOPES: string[] = ["https://www.googleapis.com/auth/drive"];
 // created automatically when the authorization flow completes for the first
 // time.
 const TOKEN_PATH: string = __maindir + "json/token.json";
-
+const { clg } = silentConsole;
 type LocalCredentials = {
 	client_id: string;
 	project_id: string;
@@ -79,6 +79,7 @@ async function getAccessToken(oAuth2Client: OAuth2Client): Promise<void> {
 			input: process.stdin,
 			output: process.stdout
 		});
+		//@ts-ignore
 		const question = promisify<string, string>(rl.question).bind(rl);
 		const getToken = promisify<string, Credentials>(oAuth2Client.getToken).bind(oAuth2Client);
 

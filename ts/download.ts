@@ -3,13 +3,16 @@ import fs from "fs/promises";
 import path from "path";
 import { argv } from "process";
 import { treeFromJSON } from "./folderTreeStructure/createTreeStructure";
-import { FileNode, JSONVertTree } from "./folderTreeStructure/node";
-import { BackupFile, clg, setSilentConsole, sleep, __maindir } from "./globals";
+import { FileNode } from "./folderTreeStructure/node";
+import { BackupFile, silentConsole, sleep, __maindir } from "./globals";
 import { initAuth } from "./utils/auth";
 import { downloadFile, folderExists, setDrive } from "./utils/driveQueries";
 import { readJSONFile } from "./utils/handleJSON";
 import { actions, resultHandler, setSilentLogs } from "./utils/logs";
+import { initBar, updateBar } from "./utils/progressBar";
 
+const { clg, setSilentConsole } = silentConsole;
+const downloadThroughput = 20;
 const checkArgs = (): boolean => {
 	if (argv.length < 4) {
 		console.log("You need to specify the destination for the downloaded files.");
@@ -24,7 +27,7 @@ const checkArgs = (): boolean => {
 		return false;
 	}
 	if (argv.length > 4) {
-		for (let i = 3; i < argv.length; i++) {
+		for (let i = 4; i < argv.length; i++) {
 			if (argv[i] === "-ls") setSilentLogs();
 			if (argv[i] === "-s") setSilentConsole();
 		}
@@ -82,11 +85,12 @@ async function downloadNode(node: FileNode): Promise<void> {
 
 async function download(id: string, dest: string) {
 	const folderTree: FileNode = (await treeFromJSON(id)).tree.changeLocation(dest);
+	if (silentConsole.isSilent) initBar(folderTree.size);
 	let queue: FileNode[] = [folderTree];
 	let queueSize = 0;
 	let t = performance.now();
 	while (true) {
-		if (queueSize === 20) {
+		if (queueSize === downloadThroughput) {
 			await sleep(50);
 			continue;
 		}
@@ -100,6 +104,7 @@ async function download(id: string, dest: string) {
 		downloadNode(node).finally(() => {
 			queue.push(...[...node.leafs, ...node.children]);
 			queueSize--;
+			if (silentConsole.isSilent && node.isLeaf) updateBar(node.size);
 		});
 	}
 	clg(`It took ${((performance.now() - t) / 1000).toFixed(2)} seconds to download.`);

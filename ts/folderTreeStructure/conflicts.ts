@@ -1,4 +1,4 @@
-import { clg, Nullable } from "../globals";
+import { Nullable, silentConsole } from "../globals";
 import { relocateFile, removeFile } from "../utils/driveQueries";
 import { FileNode } from "./node";
 
@@ -8,6 +8,7 @@ type Conflicts = {
 };
 const conflicts: Conflicts = { remove: [], update: [] };
 const relocFreqThreshold = 0.6;
+const { clg } = silentConsole;
 function searchName(str: string, arr: FileNode[]): Nullable<FileNode> {
 	for (const node of arr) if (node.name === str) return node;
 	return null;

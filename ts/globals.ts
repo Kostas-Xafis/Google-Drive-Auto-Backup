@@ -20,8 +20,8 @@ export const __maindir: string = resolve(__dirname, "../") + "/";
 
 export const sleep = async (ms: number) => await new Promise((rs, rj) => setTimeout(rs, ms));
 
-let silentConsole = false;
-
-export const setSilentConsole = () => (silentConsole = true);
-
-export const clg = (s: string) => (!silentConsole ? console.log(s) : null);
+export const silentConsole = {
+	isSilent: false,
+	setSilentConsole: () => (silentConsole.isSilent = true),
+	clg: (s: string) => (!silentConsole.isSilent ? console.log(s) : null)
+};

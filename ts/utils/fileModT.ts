@@ -1,11 +1,10 @@
-import { Stats } from "fs";
-import { stat } from "fs/promises";
+import { Stats, statSync } from "fs";
 import { Nullable } from "../globals";
 import { actions, resultHandler } from "./logs";
 export async function getModificationTimeFromFile(path: string): Promise<number> {
 	let err: any, data: Nullable<Stats>;
 	try {
-		data = await stat(path);
+		data = statSync(path);
 	} catch (error) {
 		err = error;
 	} finally {

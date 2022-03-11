@@ -40,7 +40,7 @@ function updateLogs(action: string, err: Error): void {
 export function resultHandler(id: string, err?: Error): void {
 	if (!err && !silent) {
 		updateLogs("SUCCESSFUL action " + id, null);
-	} else {
+	} else if (err) {
 		updateLogs("ERROR at action " + id, err);
 		console.log(clc.redBright("An error occured with action: ") + id);
 	}

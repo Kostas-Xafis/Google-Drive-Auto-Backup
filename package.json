@@ -1,1 +1,31 @@
-{"name":"gdriveautobackup","version":"1.0.0","main":"./js/backup.js","devDependencies":{"@types/cli-progress":"^3.9.2","@types/node":"^17.0.18"},"scripts":{"test":"echo \"Error: no test specified\" && exit 1"},"author":"Kostas Xafis","license":"ISC","description":"","dependencies":{"@types/cli-color":"^2.0.2","@types/micromatch":"^4.0.2","cli-color":"^2.0.1","cli-progress":"^3.10.0","googleapis":"^95.0.0","micromatch":"^4.0.4"}}
+{
+  "name": "gdriveautobackup",
+  "version": "1.0.0",
+  "main": "./js/backup.js",
+  "devDependencies": {
+    "@types/cli-progress": "^3.9.2",
+    "@types/node": "^17.0.18"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Kostas Xafis",
+  "license": "ISC",
+  "description": "git clone https://github.com/Kostas-Xafis/Google-Drive-Auto-Backup.git",
+  "dependencies": {
+    "@types/cli-color": "^2.0.2",
+    "@types/micromatch": "^4.0.2",
+    "cli-color": "^2.0.1",
+    "cli-progress": "^3.10.0",
+    "googleapis": "^95.0.0",
+    "micromatch": "^4.0.4"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Kostas-Xafis/Google-Drive-Auto-Backup.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Kostas-Xafis/Google-Drive-Auto-Backup/issues"
+  },
+  "homepage": "https://github.com/Kostas-Xafis/Google-Drive-Auto-Backup#readme"
+}

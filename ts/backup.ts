@@ -2,13 +2,16 @@ import path from "path";
 import { argv } from "process";
 import { generateTree, JSONFromTree } from "./folderTreeStructure/createTreeStructure";
 import { FileNode } from "./folderTreeStructure/node";
-import { BackupFile, clg, setSilentConsole, sleep, __maindir } from "./globals";
+import { BackupFile, silentConsole, sleep, __maindir } from "./globals";
 import { initAuth } from "./utils/auth";
 import { createFolder, folderExists, setDrive, uploadFile, uploadFolder } from "./utils/driveQueries";
 import { readJSONFile, writeJSONFile } from "./utils/handleJSON";
 import clc from "cli-color";
 import { setSilentLogs } from "./utils/logs";
+import { initBar, updateBar } from "./utils/progressBar";
 
+const { clg, setSilentConsole } = silentConsole;
+const uploadThroughput = 10;
 const checkArgs = (): boolean => {
 	if (argv.length < 3) {
 		console.log("You need to specify your folder's path to backup");
@@ -64,12 +67,14 @@ async function getBackupId(backupFile: BackupFile, dir: string) {
 }
 
 async function backup(tree: FileNode) {
+	if (silentConsole.isSilent) initBar(tree.size);
+
 	let queue: FileNode[] = [tree];
 	let queueSize = 0;
 	clg(clc.greenBright("==========Start Uploading=========="));
 	let t = performance.now();
 	while (true) {
-		if (queueSize === 15) {
+		if (queueSize === uploadThroughput) {
 			await sleep(50);
 			continue;
 		}
@@ -83,6 +88,7 @@ async function backup(tree: FileNode) {
 		uploadNode(node).finally(() => {
 			queue.push(...[...node.leafs, ...node.children]);
 			queueSize--;
+			if (silentConsole.isSilent && node.isLeaf) updateBar(node.size);
 		});
 	}
 	clg(clc.greenBright("==========Done Uploading==========="));

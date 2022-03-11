@@ -1,5 +1,5 @@
 import { FileNode, JSONFileNode, JSONVertTree } from "./node";
-import fs, { Dirent } from "fs";
+import fs, { Dirent, statSync } from "fs";
 import { BackupFile, __maindir } from "../globals";
 import { readJSONFile, writeJSONFile } from "../utils/handleJSON";
 import micromatch from "micromatch";
@@ -16,7 +16,14 @@ type CompleteTree = {
 const createTree = async (location: string): Promise<FileNode> => {
 	const backup: BackupFile = await readJSONFile(__maindir + "json/backupFile.json");
 	excludePatterns = backup.excludePatterns;
-	const root: FileNode = new FileNode({ id: backup.id[location], parent: null, name: path.basename(location), location, isLeaf: false });
+	const root: FileNode = new FileNode({
+		id: backup.id[location],
+		parent: null,
+		name: path.basename(location),
+		location,
+		isLeaf: false,
+		size: 0
+	});
 	searchNode(root);
 	return root;
 };
@@ -28,11 +35,15 @@ const searchNode = (parent: FileNode): void => {
 			const location = parent.location + "/" + entry.name;
 			if (micromatch.isMatch(location, excludePatterns)) return;
 			//Add directories and files to node
-			parent.appendNode(new FileNode({ parent, name: entry.name, location, isLeaf: !entry.isDirectory() }));
+			const isLeaf = !entry.isDirectory();
+			const size = isLeaf ? statSync(location).size : 0;
+			parent.appendNode(new FileNode({ parent, name: entry.name, location, isLeaf, size }));
+			parent.size += size;
 		});
 
 		parent.children.forEach(child => {
 			searchNode(child); //Repeat for children (aka directories)
+			parent.size += child.size;
 		});
 	}
 };
