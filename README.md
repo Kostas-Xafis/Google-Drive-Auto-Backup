@@ -55,19 +55,35 @@
 ```
 ---
 # **Run**
-    # Go inside the generated js folder
-    cd js
-
+```bash
+# Go inside the generated js folder
+cd js
+```
 ## **1. Backup & Update**
-    node backup <The-directory-to-backup>
-
+```bash
+node backup <directory-to-backup> 
+```
 ## **2. Remove backup**
-    #1.Remove local saved files for the backup
-    node reset <The-directory-to-remove>
-    #2.Both Locally and in Drive
-    node reset <The-directory-to-remove> -d
-## **3. Download** 
-    node download <The-directory-to-download> <The-destination-to-install-it>
+```bash
+#1.Remove local saved files for the backup
+node reset <directory-to-remove>
 
+#2.Both Locally and in Drive
+node reset <directory-to-remove> -d
+```
+## **3. Download**
+```bash
+node download <directory-to-download> <The-destination-to-install-it>
+```
+## **4. Other**
+```bash
+#If you don't want logs to be generated
+node <command> <...> -ls
+
+#if you don't want the output to be wordy
+node <command> <...> -l
+```
+
+### **Note:** Errors will not be silenced neither in logs nor in the output.
 # **Bugs**
 ### If any unexpected **error** occurs then post an issue with the resulted error from the generated **logs.log** file (But remove any sensitive data first).
