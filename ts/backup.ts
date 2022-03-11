@@ -27,7 +27,6 @@ async function uploadNode(node: FileNode) {
 (async function () {
 	if (!checkArgs()) return;
 	const dir = argv[2];
-
 	try {
 		// Authenticate & Connect with the Google Drive API
 		const auth = await initAuth();
