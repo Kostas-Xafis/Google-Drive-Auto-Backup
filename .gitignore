@@ -3,7 +3,7 @@
 /.vscode
 *.log
 *.txt
-/json/trees/**
+/json/trees/*.json
 /json/credentials.json
 /json/token.json
 /json/backupFile.json

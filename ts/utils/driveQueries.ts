@@ -22,7 +22,7 @@ export function setDrive(auth: OAuth2Client) {
 
 export async function createFolder(folder: drive_v3.Schema$File): Promise<string> {
 	let data: Nullable<drive_v3.Schema$File>;
-	let err: unknown;
+	let err;
 	try {
 		const folderMetadata = {
 			...folder,
@@ -39,7 +39,7 @@ export async function createFolder(folder: drive_v3.Schema$File): Promise<string
 
 export async function createFile(metadata: drive_v3.Schema$File, file: MediaType): Promise<Nullable<string>> {
 	let data: Nullable<drive_v3.Schema$File>;
-	let err: unknown;
+	let err;
 	try {
 		data = (await drive.files.create({ requestBody: metadata, media: file, fields: "id" })).data;
 	} catch (error) {
@@ -52,7 +52,7 @@ export async function createFile(metadata: drive_v3.Schema$File, file: MediaType
 
 export async function folderExists(id: Nullable<string>): Promise<boolean> {
 	if (!id) return false;
-	let err: unknown = null;
+	let err;
 	try {
 		await drive.files.get({ fileId: id });
 	} catch (error) {
@@ -66,7 +66,7 @@ export async function folderExists(id: Nullable<string>): Promise<boolean> {
 
 export async function removeFile(id: Nullable<string>): Promise<void> {
 	if (!id) return;
-	let err: any;
+	let err;
 	try {
 		await drive.files.delete({ fileId: id });
 	} catch (error) {
@@ -79,7 +79,7 @@ export async function removeFile(id: Nullable<string>): Promise<void> {
 
 export async function relocateFile(node: FileNode): Promise<void> {
 	if (!node.id) return;
-	let err: unknown = null;
+	let err;
 	try {
 		await drive.files.update({ fileId: node.id, requestBody: { name: node.name } });
 	} catch (error) {
@@ -111,13 +111,13 @@ export async function uploadFolder(node: FileNode): Promise<void> {
 
 export async function downloadFile(id: Nullable<string>): Promise<Nullable<any>> {
 	if (!id) return;
-	let err: any, data;
+	let err, data;
 	try {
 		//I can't use the "acknowledgeAbuse: true" query if a file is not flagged as not abusive cause it will throw an error
 		data = (await drive.files.get({ fileId: id, alt: "media" })).data;
 		if (typeof data === "object") data = JSON.stringify(data, null, 2);
 	} catch (error) {
-		err = error; //Cant'f find a type for drive api errors :(
+		err = error as any; //Cant'f find a type for drive api errors :(
 		if (err?.errors[0]?.reason === "cannotDownloadAbusiveFile") {
 			try {
 				data = (await drive.files.get({ fileId: id, alt: "media", acknowledgeAbuse: true })).data;
