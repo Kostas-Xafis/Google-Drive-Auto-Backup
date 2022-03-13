@@ -38,12 +38,10 @@ const searchNode = (parent: FileNode): void => {
 			const isLeaf = !entry.isDirectory();
 			const size = isLeaf ? statSync(location).size : 0;
 			parent.appendNode(new FileNode({ parent, name: entry.name, location, isLeaf, size }));
-			parent.size += size;
 		});
 
 		parent.children.forEach(child => {
 			searchNode(child); //Repeat for children (aka directories)
-			parent.size += child.size;
 		});
 	}
 };

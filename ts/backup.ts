@@ -67,8 +67,11 @@ async function getBackupId(backupFile: BackupFile, dir: string) {
 }
 
 async function backup(tree: FileNode) {
-	if (silentConsole.isSilent) initBar(tree.size);
-
+	if (silentConsole.isSilent) {
+		let files = 0;
+		tree.traverse(node => node.isLeaf && files++);
+		initBar(tree.size, "Uploading: ", files);
+	}
 	let queue: FileNode[] = [tree];
 	let queueSize = 0;
 	clg(clc.greenBright("==========Start Uploading=========="));
@@ -88,7 +91,7 @@ async function backup(tree: FileNode) {
 		uploadNode(node).finally(() => {
 			queue.push(...[...node.leafs, ...node.children]);
 			queueSize--;
-			if (silentConsole.isSilent && node.isLeaf) updateBar(node.size);
+			if (silentConsole.isSilent && node.isLeaf) updateBar(node.size, node.location);
 		});
 	}
 	clg(clc.greenBright("==========Done Uploading==========="));

@@ -85,7 +85,11 @@ async function downloadNode(node: FileNode): Promise<void> {
 
 async function download(id: string, dest: string) {
 	const folderTree: FileNode = (await treeFromJSON(id)).tree.changeLocation(dest);
-	if (silentConsole.isSilent) initBar(folderTree.size);
+	if (silentConsole.isSilent) {
+		let files = 0;
+		folderTree.traverse(node => node.isLeaf && files++);
+		initBar(folderTree.size, "Downloading: ", files);
+	}
 	let queue: FileNode[] = [folderTree];
 	let queueSize = 0;
 	let t = performance.now();
@@ -104,7 +108,7 @@ async function download(id: string, dest: string) {
 		downloadNode(node).finally(() => {
 			queue.push(...[...node.leafs, ...node.children]);
 			queueSize--;
-			if (silentConsole.isSilent && node.isLeaf) updateBar(node.size);
+			if (silentConsole.isSilent && node.isLeaf) updateBar(node.size, node.location);
 		});
 	}
 	clg(`It took ${((performance.now() - t) / 1000).toFixed(2)} seconds to download.`);

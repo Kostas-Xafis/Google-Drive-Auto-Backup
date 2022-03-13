@@ -1,20 +1,31 @@
+import clc from "cli-color";
 import cliProgress, { SingleBar } from "cli-progress";
 import { sleep } from "../globals";
 
-let size = 0;
-let prevSize = 0;
-let bar: SingleBar;
-const queue: number[] = [];
+const updateQueue: number[] = [];
 
-export async function initBar(totalsize: number) {
-	bar = new cliProgress.SingleBar({ stopOnComplete: true }, cliProgress.Presets.shades_classic);
-	bar.start(totalsize, 0);
+export async function initBar(totalsize: number, command: string, totalFiles: number) {
+	let size = 0;
+	let prevSize = 0;
+	let files = 0;
+	const bar = new cliProgress.SingleBar(
+		{
+			stopOnComplete: true,
+			format: `${command} ` + clc.blue("{bar}") + " {percentage}% | {value}/{total} KB | Files {files}/{totalFiles}"
+		},
+		cliProgress.Presets.shades_classic
+	);
+	bar.start(toKB(totalsize), 0, {
+		files: "0",
+		totalFiles
+	});
+
 	while (true) {
-		//@ts-ignore
-		if (queue.length !== 0) size += queue.pop();
+		if (updateQueue.length !== 0) size += updateQueue.pop() || 0;
 
 		if (size === totalsize) {
-			bar.update(totalsize);
+			files++;
+			bar.update(toKB(totalsize), { files, fileName: "Done" });
 			break;
 		}
 		if (prevSize === size) {
@@ -22,8 +33,11 @@ export async function initBar(totalsize: number) {
 			continue;
 		}
 		prevSize = size;
-		bar.update(size);
+		files++;
+		bar.update(toKB(size), { files });
 	}
 }
 
-export const updateBar = (addSize: number) => queue.push(addSize);
+const toKB = (n: number) => Math.round(n / 1024);
+
+export const updateBar = (addSize: number, file: string) => updateQueue.push(addSize);

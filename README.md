@@ -25,7 +25,7 @@
 ### **2.4** Finally go to **Marketplace** from the navigation **>** **Search** for "Drive" and click the "Google Drive API" **>** **Click** enable and you are done.
 #### ***Note:** Currently the project supports only 1 gmail user.
 ---
-### **3.** Add the downloaded json folder to the projects /json directory and remove the **"installed"** key, so it looks like this:
+### **3.** Add the downloaded json file to the project's /json directory and remove the **"installed"** key, so it looks like this:
 ```json
 {
     "client_id": "<client_id>.apps.googleusercontent.com",

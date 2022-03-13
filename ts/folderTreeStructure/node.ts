@@ -58,12 +58,14 @@ export class FileNode {
 	}
 
 	appendNode(node: FileNode): void {
+		this.updateSize(node.size);
 		if (node.isLeaf) this.leafs.push(node);
 		else this.children.push(node);
 		node.parent = this;
 	}
 
 	removeNode(node: FileNode): void {
+		this.updateSize(-node.size);
 		if (node.isLeaf) {
 			this.leafs = this.leafs.filter(leaf => leaf.location !== node.location);
 		} else {
@@ -115,6 +117,15 @@ export class FileNode {
 		const vertTree: JSONVertTree = {};
 		this.traverse(node => node.addNodesList(vertTree));
 		return vertTree;
+	}
+
+	updateSize(size: number) {
+		this.size += size;
+		let parent = this.parent;
+		while (parent != null) {
+			parent.size += size;
+			parent = parent.parent;
+		}
 	}
 }
 
