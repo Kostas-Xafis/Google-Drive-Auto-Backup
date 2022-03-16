@@ -83,29 +83,29 @@ export class FileNode {
 
 	traverse(cb: (a: FileNode) => void): Promise<void> | void {
 		if (cb.constructor.name == "AsyncFunction") {
-			return this.traverse_async(cb);
-		} else this.traverse_norm(cb);
+			return this.#traverse_async(cb);
+		} else this.#traverse_norm(cb);
 	}
 
-	traverse_norm(cb: (a: FileNode) => void): void {
+	#traverse_norm(cb: (a: FileNode) => void): void {
 		cb(this);
 		if (this.isLeaf) return;
 		for (const leaf of this.leafs) {
-			leaf.traverse_norm(cb);
+			leaf.#traverse_norm(cb);
 		}
 		for (const child of this.children) {
-			child.traverse_norm(cb);
+			child.#traverse_norm(cb);
 		}
 	}
 
-	async traverse_async(cb: (a: FileNode) => void): Promise<void> {
+	async #traverse_async(cb: (a: FileNode) => void): Promise<void> {
 		await cb(this);
 		if (this.isLeaf) return;
 		for (const leaf of this.leafs) {
-			await leaf.traverse_async(cb);
+			await leaf.#traverse_async(cb);
 		}
 		for (const child of this.children) {
-			await child.traverse_async(cb);
+			await child.#traverse_async(cb);
 		}
 	}
 

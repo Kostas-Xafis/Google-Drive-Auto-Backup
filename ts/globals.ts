@@ -4,7 +4,7 @@ export type Nullable<T> = T | null | undefined;
 
 export type BackupFile = {
 	excludePatterns: { [k: string]: string[] };
-	id: { [k: string]: string };
+	ids: { [k: string]: string };
 };
 
 export type MimeTypes = {

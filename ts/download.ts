@@ -12,7 +12,7 @@ import { actions, resultHandler, setSilentLogs } from "./utils/logs";
 import { initBar, updateBar } from "./utils/progressBar";
 
 const { clg, setSilentConsole } = silentConsole;
-const downloadThroughput = 20;
+const downloadThroughput = 25;
 const checkArgs = (): boolean => {
 	if (argv.length < 4) {
 		console.log("You need to specify the destination for the downloaded files.");
@@ -70,7 +70,7 @@ async function downloadNode(node: FileNode): Promise<void> {
 		const backupFile: BackupFile = <BackupFile>Object.assign({}, await readJSONFile(__maindir + "json/backupFile.json"));
 
 		// Check backup folder exists in gdrive
-		let id = backupFile.id[src];
+		let id = backupFile.ids[src];
 		const exists = await folderExists(id);
 		if (!exists) {
 			console.log(clc.blueBright("Backup folder wasn't found.\n"));
@@ -108,7 +108,7 @@ async function download(id: string, dest: string) {
 		downloadNode(node).finally(() => {
 			queue.push(...[...node.leafs, ...node.children]);
 			queueSize--;
-			if (silentConsole.isSilent && node.isLeaf) updateBar(node.size, node.location);
+			if (silentConsole.isSilent && node.isLeaf) updateBar(node.size);
 		});
 	}
 	clg(`It took ${((performance.now() - t) / 1000).toFixed(2)} seconds to download.`);

@@ -9,13 +9,15 @@
 
 # **Setup**
 ### **1.** Run on your console:
-    git clone https://github.com/Kostas-Xafis/Google-Drive-Auto-Backup.git
+```bash
+git clone https://github.com/Kostas-Xafis/Google-Drive-Auto-Backup.git
 
-    cd Google-Drive-Auto-Backup
+cd Google-Drive-Auto-Backup
 
-    npm install
+npm install
 
-    tsc -build
+tsc -build
+```
 ---
 **Note:** If you have already configured google drive api in a project of yours then skip the next step.
 ### **2.** Go to [Google Console](https://console.cloud.google.com/ "https://console.cloud.google.com/") and create a new project.
@@ -38,7 +40,7 @@
 }
 ```
 ---
-### **4.** Add a file named backupFile.json in the /json folder. Here you can add any glob pattern to exlude from your backup. You can have a general one or specify one for your backup's directory.
+### **4.** Add a file named backupFile.json in the /json folder. Here you can add any glob pattern to exclude from your backup. You can have a general one or specify one for your backup's directory.
 ```json
 {
   "excludePatterns": {
@@ -50,7 +52,7 @@
           "etc..."
       ]
   },
-  "id": {}
+  "ids": {}
 }
 ```
 ---
@@ -61,19 +63,21 @@ cd js
 ```
 ## **1. Backup & Update**
 ```bash
-node backup <directory-to-backup> 
+node backup <directory-to-backup> <...>
+
+node backupAll <...>
 ```
 ## **2. Remove backup**
 ```bash
 #1.Remove local saved files for the backup
 node reset <directory-to-remove>
 
-#2.Both Locally and in Drive
+#2.Both locally and in Drive
 node reset <directory-to-remove> -d
 ```
 ## **3. Download**
 ```bash
-node download <directory-to-download> <destination-to-install-it>
+node download <directory-to-download> <destination-to-install-it> <...>
 ```
 ## **4. Other**
 ```bash

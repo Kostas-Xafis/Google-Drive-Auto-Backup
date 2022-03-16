@@ -11,8 +11,8 @@ import { setSilentLogs } from "./utils/logs";
 import { initBar, updateBar } from "./utils/progressBar";
 
 const { clg, setSilentConsole } = silentConsole;
-const uploadThroughput = 10;
-const checkArgs = (): boolean => {
+const uploadThroughput = 15;
+function checkArgs(): boolean {
 	if (argv.length < 3) {
 		console.log("You need to specify your folder's path to backup");
 		return false;
@@ -28,7 +28,7 @@ const checkArgs = (): boolean => {
 		}
 	}
 	return true;
-};
+}
 
 async function uploadNode(node: FileNode) {
 	node.isLeaf ? await uploadFile(node) : await uploadFolder(node);
@@ -56,17 +56,18 @@ async function uploadNode(node: FileNode) {
 
 // Check backup folder exists in gdrive
 async function getBackupId(backupFile: BackupFile, dir: string) {
-	let id = backupFile.id[dir];
+	const { ids } = backupFile;
+	let id = ids[dir];
 	const exists = await folderExists(id);
 	if (!exists) {
 		clg(clc.blueBright("Backup folder wasn't found.\tCreating one right now..."));
-		id = backupFile.id[dir] = await createFolder({ name: path.basename(dir) });
+		id = ids[dir] = await createFolder({ name: path.basename(dir) });
 		await writeJSONFile(__maindir + "json/backupFile.json", backupFile);
 	} else clg(clc.blueBright("Found backup in Google Drive: " + path.basename(dir)));
 	return id;
 }
 
-async function backup(tree: FileNode) {
+export async function backup(tree: FileNode) {
 	if (silentConsole.isSilent) {
 		let files = 0;
 		tree.traverse(node => node.isLeaf && files++);
@@ -91,7 +92,7 @@ async function backup(tree: FileNode) {
 		uploadNode(node).finally(() => {
 			queue.push(...[...node.leafs, ...node.children]);
 			queueSize--;
-			if (silentConsole.isSilent && node.isLeaf) updateBar(node.size, node.location);
+			if (silentConsole.isSilent && node.isLeaf) updateBar(node.size);
 		});
 	}
 	clg(clc.greenBright("==========Done Uploading==========="));

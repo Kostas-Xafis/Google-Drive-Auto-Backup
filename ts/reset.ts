@@ -11,9 +11,9 @@ import { actions, resultHandler } from "./utils/logs";
 (async () => {
 	try {
 		const buf: BackupFile = await readJSONFile(__maindir + "json/backupFile.json");
-		const id = buf.id[argv[2]];
+		const id = buf.ids[argv[2]];
 		if (!id) return console.log("Couldn't find directory:" + argv[2]);
-		delete buf.id[argv[2]];
+		delete buf.ids[argv[2]];
 		await unlink(__maindir + `json/trees/${id}.json`);
 		await writeJSONFile(__maindir + "json/backupFile.json", buf);
 		if (argv[3] && argv[3] === "-d") {

@@ -25,7 +25,7 @@ export async function initBar(totalsize: number, command: string, totalFiles: nu
 
 		if (size === totalsize) {
 			files++;
-			bar.update(toKB(totalsize), { files, fileName: "Done" });
+			bar.update(toKB(totalsize), { files });
 			break;
 		}
 		if (prevSize === size) {
@@ -40,4 +40,4 @@ export async function initBar(totalsize: number, command: string, totalFiles: nu
 
 const toKB = (n: number) => Math.round(n / 1024);
 
-export const updateBar = (addSize: number, file: string) => updateQueue.push(addSize);
+export const updateBar = (addSize: number) => updateQueue.push(addSize);
