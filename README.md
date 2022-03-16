@@ -65,7 +65,7 @@ tsc -build
 {
     "excludePatterns":{},
     "ids":{},
-    "update": "daily" | "weekly" | "biweekly" | "monthly" | <specified amount of time in seconds>  
+    "update": "daily | weekly | biweekly | monthly | <specified amount of time in seconds>"  
 }
 ```
 ---
@@ -110,5 +110,5 @@ node <command> <...> -l
 ## **Limitations**
 ### **1.** You can not exceed the free 15 GB storage cap, unless you pay a monthly subscription.
 ### **2.** You can make only 10.000 API calls daily (aka 10.000 file and folder uploads/downloads), unless again you pay a monthly subscription.
-### **3.** The automation script will only execute at start-up. If the appropriate time hasn't passed, then the update will happend at startup once the time has passed (aka it will check to update only at startup).
+### **3.** The automation script will only execute at start-up. If the appropriate time hasn't passed, then the update will happen at startup once the time has passed (aka it will check to update only at startup).
 ### **4.** Currently the use of multiple gmail accounts is not supported. (Working on it) 
