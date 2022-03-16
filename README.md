@@ -56,6 +56,19 @@ tsc -build
 }
 ```
 ---
+### **5.** If you want your backups to update automatically after a specified amount of time then you should run the setup.(bat/sh) file from the project. (Note *: .sh for unix systems is not ready yet).
+```bash
+./setup.bat
+```
+### In the backupFile.json file you have to add the field update like this:
+```json
+{
+    "excludePatterns":{},
+    "ids":{},
+    "update": "daily" | "weekly" | "biweekly" | "monthly" | <specified amount of time in seconds>  
+}
+```
+---
 # **Run**
 ```bash
 # Go inside the generated js folder
@@ -63,8 +76,10 @@ cd js
 ```
 ## **1. Backup & Update**
 ```bash
+#Backup or update a directory
 node backup <directory-to-backup> <...>
 
+#Update all your registered backup directories
 node backupAll <...>
 ```
 ## **2. Remove backup**
@@ -91,3 +106,9 @@ node <command> <...> -l
 ### **Note:** Errors will not be silenced neither in logs nor in the output.
 # **Bugs**
 ### If any unexpected **error** occurs then post an issue with the resulted error from the generated **logs.log** file (But remove any sensitive data first).
+
+## **Limitations**
+### **1.** You can not exceed the free 15 GB storage cap, unless you pay a monthly subscription.
+### **2.** You can make only 10.000 API calls daily (aka 10.000 file and folder uploads/downloads), unless again you pay a monthly subscription.
+### **3.** The automation script will only execute at start-up. If the appropriate time hasn't passed, then the update will happend at startup once the time has passed (aka it will check to update only at startup).
+### **4.** Currently the use of multiple gmail accounts is not supported. (Working on it) 
