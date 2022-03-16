@@ -55,13 +55,6 @@ export const treeFromJSON = async (id: string): Promise<CompleteTree> => {
 	return { tree, vertTree };
 };
 
-/**
- * If the directory is not backuped then it generates the tree on the fly,
- * else it's going to get the StorableJSONVertTree, convert it to a FileNode tree
- * and then search for conflicts between it and the current file structure.
- * @param dir
- * @returns The root of the updated tree
- */
 export const generateTree = async (dir: string, id: string): Promise<FileNode> => {
 	try {
 		fs.statSync(__maindir + `json/trees/${id}.json`);
@@ -75,10 +68,6 @@ export const generateTree = async (dir: string, id: string): Promise<FileNode> =
 	}
 };
 
-/**
- * Converts a given tree of @type {FileNode}
- * to a storable json format and then stores it to the /json/trees folder
- */
 export const JSONFromTree = async (tree: FileNode): Promise<void> => {
 	await JSONFileNode.addJSONFileNode(tree, null);
 	await writeJSONFile(__maindir + `json/trees/${tree.id}.json`, JSONFileNode.dir);

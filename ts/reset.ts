@@ -6,14 +6,15 @@ import { BackupFile, __maindir } from "./globals";
 import { initAuth } from "./utils/auth";
 import { removeFile, setDrive } from "./utils/driveQueries";
 import { readJSONFile, writeJSONFile } from "./utils/handleJSON";
-import { actions, resultHandler } from "./utils/logs";
+import { actions, resultHandler, updateLogs } from "./utils/logs";
 
 (async () => {
 	try {
 		const buf: BackupFile = await readJSONFile(__maindir + "json/backupFile.json");
-		const id = buf.ids[argv[2]];
-		if (!id) return console.log("Couldn't find directory:" + argv[2]);
-		delete buf.ids[argv[2]];
+		const dir = argv[2];
+		const id = buf.ids[dir];
+		if (!id) return console.log("Couldn't find directory:" + dir);
+		delete buf.ids[dir];
 		await unlink(__maindir + `json/trees/${id}.json`);
 		await writeJSONFile(__maindir + "json/backupFile.json", buf);
 		if (argv[3] && argv[3] === "-d") {
@@ -22,6 +23,7 @@ import { actions, resultHandler } from "./utils/logs";
 			setDrive(auth);
 			await removeFile(id);
 		}
+		updateLogs(actions.BACKUP_DELETE, { comment: ` of directory: ${dir}` });
 	} catch (err) {
 		let error: any = err;
 		let errAction = error?.syscall
@@ -29,6 +31,6 @@ import { actions, resultHandler } from "./utils/logs";
 				? actions.READ_LOC_FILE
 				: actions.WRITE_LOC_FILE
 			: actions.FOLDER_DELETION;
-		resultHandler(errAction, err);
+		resultHandler(errAction, { err });
 	}
 })();

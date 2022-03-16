@@ -38,7 +38,7 @@ export async function initAuth(): Promise<OAuth2Client | void> {
 	} catch (error) {
 		err = error;
 	} finally {
-		resultHandler(actions.READ_LOC_FILE, err);
+		resultHandler(actions.READ_LOC_FILE, { err });
 		if (err) return console.log("Error: Can't procced without a credentials.json file");
 	}
 }
@@ -90,7 +90,7 @@ async function getAccessToken(oAuth2Client: OAuth2Client): Promise<void> {
 		// Store the token to disk for later program executions
 		await fs.writeFile(TOKEN_PATH, JSON.stringify(token, null, 2), { encoding: "utf-8" });
 		clg(clc.yellow("Token stored to", __maindir + "json/token.json"));
-	} catch (error) {
-		resultHandler(actions.WRITE_LOC_FILE, error);
+	} catch (err) {
+		resultHandler(actions.WRITE_LOC_FILE, { err });
 	}
 }

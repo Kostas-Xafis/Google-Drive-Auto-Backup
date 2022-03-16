@@ -8,7 +8,7 @@ import { BackupFile, silentConsole, sleep, __maindir } from "./globals";
 import { initAuth } from "./utils/auth";
 import { downloadFile, folderExists, setDrive } from "./utils/driveQueries";
 import { readJSONFile } from "./utils/handleJSON";
-import { actions, resultHandler, setSilentLogs } from "./utils/logs";
+import { actions, resultHandler, setSilentLogs, updateLogs } from "./utils/logs";
 import { initBar, updateBar } from "./utils/progressBar";
 
 const { clg, setSilentConsole } = silentConsole;
@@ -51,7 +51,7 @@ async function downloadNode(node: FileNode): Promise<void> {
 		}
 	} catch (err) {
 		if (fileData != null) console.log(fileData);
-		resultHandler(actions.WRITE_LOC_FILE, err);
+		resultHandler(actions.WRITE_LOC_FILE, { err });
 		console.log((!node.isLeaf ? "Folder" : "File") + " in " + node.location + " was not stored.");
 	}
 }
@@ -77,6 +77,7 @@ async function downloadNode(node: FileNode): Promise<void> {
 			return;
 		}
 		await download(id, dest);
+		updateLogs(actions.BACKUP_DOWNLOAD, { comment: ` of directory: ${src}` });
 	} catch (err) {
 		console.log(err);
 		return;

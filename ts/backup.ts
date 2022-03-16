@@ -7,7 +7,7 @@ import { initAuth } from "./utils/auth";
 import { createFolder, folderExists, setDrive, uploadFile, uploadFolder } from "./utils/driveQueries";
 import { readJSONFile, writeJSONFile } from "./utils/handleJSON";
 import clc from "cli-color";
-import { setSilentLogs } from "./utils/logs";
+import { actions, setSilentLogs, updateLogs } from "./utils/logs";
 import { initBar, updateBar } from "./utils/progressBar";
 
 const { clg, setSilentConsole } = silentConsole;
@@ -48,6 +48,7 @@ async function uploadNode(node: FileNode) {
 
 		let id = await getBackupId(backupFile, dir);
 		await backup(await generateTree(dir, id));
+		updateLogs(actions.BACKUP_UPDATE, { comment: ` of directory: ${dir}` });
 	} catch (err) {
 		console.log(err);
 		return;

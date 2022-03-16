@@ -5,22 +5,13 @@ import { BackupFile, __maindir } from "./globals";
 import { initAuth } from "./utils/auth";
 import { folderExists, setDrive } from "./utils/driveQueries";
 import { readJSONFile } from "./utils/handleJSON";
-import { setSilentLogs } from "./utils/logs";
+import { actions, setSilentLogs, updateLogs } from "./utils/logs";
 import { silentConsole } from "./globals";
 import clc from "cli-color";
 
-function checkArgs(): boolean {
-	if (argv.length > 2) {
-		for (let i = 2; i < argv.length; i++) {
-			if (argv[i] === "-ls") setSilentLogs();
-			if (argv[i] === "-s") silentConsole.setSilentConsole();
-		}
-	}
-	return true;
-}
-
 (async function () {
-	checkArgs();
+	setSilentLogs();
+	silentConsole.setSilentConsole();
 	try {
 		// Authenticate & Connect with the Google Drive API
 		const auth = await initAuth();
@@ -35,6 +26,7 @@ function checkArgs(): boolean {
 			console.log(clc.cyanBright("Updating: " + dir));
 			await backup(await generateTree(dir, ids[dir]));
 		}
+		updateLogs(actions.FULL_BACKUP_UPDATE, {});
 	} catch (err) {
 		console.log(err);
 		return;

@@ -32,7 +32,7 @@ export async function createFolder(folder: drive_v3.Schema$File): Promise<string
 	} catch (error) {
 		err = error;
 	} finally {
-		resultHandler(actions.FOLDER_CREATION, err);
+		resultHandler(actions.FOLDER_CREATION, { err });
 		return data?.id ? data.id : "";
 	}
 }
@@ -45,7 +45,7 @@ export async function createFile(metadata: drive_v3.Schema$File, file: MediaType
 	} catch (error) {
 		err = error;
 	} finally {
-		resultHandler(actions.FILE_CREATION, err);
+		resultHandler(actions.FILE_CREATION, { err });
 		return data?.id;
 	}
 }
@@ -58,7 +58,7 @@ export async function folderExists(id: Nullable<string>): Promise<boolean> {
 	} catch (error) {
 		err = error;
 	} finally {
-		resultHandler(actions.FOLDER_SEARCH, err);
+		resultHandler(actions.FOLDER_SEARCH, { err });
 		if (err) return false;
 		return true;
 	}
@@ -73,7 +73,7 @@ export async function removeFile(id: Nullable<string>): Promise<void> {
 		console.log(clc.redBright("An error occured:"), error);
 		err = error;
 	} finally {
-		resultHandler(actions.FOLDER_DELETION, err);
+		resultHandler(actions.FOLDER_DELETION, { err });
 	}
 }
 
@@ -85,7 +85,7 @@ export async function relocateFile(node: FileNode): Promise<void> {
 	} catch (error) {
 		err = error;
 	} finally {
-		resultHandler(actions.FOLDER_UPDATE, err);
+		resultHandler(actions.FOLDER_UPDATE, { err });
 	}
 }
 
@@ -127,7 +127,7 @@ export async function downloadFile(id: Nullable<string>): Promise<Nullable<any>>
 			}
 		}
 	} finally {
-		resultHandler(actions.FILE_DOWNLOAD, err);
+		resultHandler(actions.FILE_DOWNLOAD, { err });
 		return data;
 	}
 }
