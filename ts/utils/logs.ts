@@ -1,7 +1,8 @@
 import { Nullable, __maindir } from "../globals";
 import fs from "fs";
 import clc from "cli-color";
-
+import { silentConsole } from "../globals";
+const { clg } = silentConsole;
 export const enum actions {
 	FOLDER_CREATION = "FOLDER CREATION",
 	FOLDER_DELETION = "FOLDER DELETION",
@@ -27,6 +28,9 @@ type LogMsg = {
 };
 
 let silent = false;
+export const errorCounter = {
+	errors: 0
+};
 
 export function setSilentLogs() {
 	silent = true;
@@ -39,8 +43,7 @@ export function updateLogs(action: string, msg: LogMsg): void {
 		Date() +
 		"\n" +
 		action +
-		":\t" +
-		(err != null ? JSON.stringify(err, null, 2) : "") +
+		(err != null ? ":\t" + JSON.stringify(err, null, 2) : "") +
 		(comment != null ? comment : "") +
 		"\n\n";
 	fs.appendFile(__maindir + "/logs.log", str, { encoding: "utf-8" }, err => {
@@ -54,6 +57,13 @@ export function resultHandler(id: string, msg: LogMsg): void {
 		updateLogs("SUCCESSFUL action " + id, { comment });
 	} else if (err) {
 		updateLogs("ERROR at action " + id, { err });
-		console.log(clc.redBright("An error occured with action: ") + id);
+		clg(clc.redBright("An error occured with action: ") + id);
+		errorCounter.errors++;
 	}
+}
+
+export function warnErrors() {
+	if (errorCounter.errors === 0) return;
+	console.log(`Encountered ${errorCounter.errors} errors. Please check the logs file to inspect them.`);
+	console.log("If you think this is some sort of a bug, then feel free to make an issue at the projects' repo.");
 }

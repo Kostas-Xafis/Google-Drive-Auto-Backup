@@ -8,7 +8,7 @@ export async function getModificationTimeFromFile(path: string): Promise<number>
 	} catch (error) {
 		err = error;
 	} finally {
-		resultHandler(actions.READ_LOC_FILE, { err });
+		resultHandler(actions.READ_LOC_FILE, { comment: ` for file: ${path}`, err });
 		return data?.mtimeMs ? data.mtimeMs : NaN;
 	}
 }

@@ -20,7 +20,7 @@ export function setDrive(auth: OAuth2Client) {
 	drive = google.drive({ version: "v3", auth });
 }
 
-export async function createFolder(folder: drive_v3.Schema$File): Promise<string> {
+export async function createFolder(folder: drive_v3.Schema$File, dir: string): Promise<string> {
 	let data: Nullable<drive_v3.Schema$File>;
 	let err;
 	try {
@@ -32,12 +32,12 @@ export async function createFolder(folder: drive_v3.Schema$File): Promise<string
 	} catch (error) {
 		err = error;
 	} finally {
-		resultHandler(actions.FOLDER_CREATION, { err });
+		resultHandler(actions.FOLDER_CREATION, { comment: ` for folder: ${dir}`, err });
 		return data?.id ? data.id : "";
 	}
 }
 
-export async function createFile(metadata: drive_v3.Schema$File, file: MediaType): Promise<Nullable<string>> {
+export async function createFile(metadata: drive_v3.Schema$File, file: MediaType, dir: string): Promise<Nullable<string>> {
 	let data: Nullable<drive_v3.Schema$File>;
 	let err;
 	try {
@@ -45,12 +45,12 @@ export async function createFile(metadata: drive_v3.Schema$File, file: MediaType
 	} catch (error) {
 		err = error;
 	} finally {
-		resultHandler(actions.FILE_CREATION, { err });
+		resultHandler(actions.FILE_CREATION, { comment: ` for file: ${dir}`, err });
 		return data?.id;
 	}
 }
 
-export async function folderExists(id: Nullable<string>): Promise<boolean> {
+export async function folderExists(id: Nullable<string>, dir: string): Promise<boolean> {
 	if (!id) return false;
 	let err;
 	try {
@@ -58,22 +58,21 @@ export async function folderExists(id: Nullable<string>): Promise<boolean> {
 	} catch (error) {
 		err = error;
 	} finally {
-		resultHandler(actions.FOLDER_SEARCH, { err });
+		resultHandler(actions.FOLDER_SEARCH, { comment: ` for folder: ${dir}`, err });
 		if (err) return false;
 		return true;
 	}
 }
 
-export async function removeFile(id: Nullable<string>): Promise<void> {
+export async function removeFile(id: Nullable<string>, dir: string): Promise<void> {
 	if (!id) return;
 	let err;
 	try {
 		await drive.files.delete({ fileId: id });
 	} catch (error) {
-		console.log(clc.redBright("An error occured:"), error);
 		err = error;
 	} finally {
-		resultHandler(actions.FOLDER_DELETION, { err });
+		resultHandler(actions.FOLDER_DELETION, { comment: ` for file/folder: ${dir}`, err });
 	}
 }
 
@@ -85,17 +84,18 @@ export async function relocateFile(node: FileNode): Promise<void> {
 	} catch (error) {
 		err = error;
 	} finally {
-		resultHandler(actions.FOLDER_UPDATE, { err });
+		resultHandler(actions.FOLDER_UPDATE, { comment: ` for file/folder: ${node.location}`, err });
 	}
 }
 
 export async function uploadFile(node: FileNode): Promise<void> {
 	const modTime = Math.round(await getModificationTimeFromFile(node.location));
 	if (node.modTime != null && modTime <= node.modTime) return;
-	if (node.id != null) await removeFile(node.id);
+	if (node.id != null) await removeFile(node.id, node.location);
 	node.id = await createFile(
 		{ name: node.name, parents: [node.parent?.id ? node.parent.id : ""] },
-		{ mimeType: mimeTypes[path.extname(node.name)], body: fs.createReadStream(node.location) }
+		{ mimeType: mimeTypes[path.extname(node.name)], body: fs.createReadStream(node.location) },
+		node.location
 	);
 	if (node.id == null) return node.parent?.removeNode(node);
 
@@ -105,11 +105,11 @@ export async function uploadFile(node: FileNode): Promise<void> {
 }
 
 export async function uploadFolder(node: FileNode): Promise<void> {
-	if (await folderExists(node.id)) return;
-	if (node?.parent?.id) node.id = await createFolder({ name: node.name, parents: [node.parent.id] });
+	if (await folderExists(node.id, node.location)) return;
+	if (node?.parent?.id) node.id = await createFolder({ name: node.name, parents: [node.parent.id] }, node.location);
 }
 
-export async function downloadFile(id: Nullable<string>): Promise<Nullable<any>> {
+export async function downloadFile(id: Nullable<string>, dir: string): Promise<Nullable<any>> {
 	if (!id) return;
 	let err, data;
 	try {
@@ -117,7 +117,7 @@ export async function downloadFile(id: Nullable<string>): Promise<Nullable<any>>
 		data = (await drive.files.get({ fileId: id, alt: "media" })).data;
 		if (typeof data === "object") data = JSON.stringify(data, null, 2);
 	} catch (error) {
-		err = error as any; //Cant'f find a type for drive api errors :(
+		err = error as any; //Can't find a type for drive api errors :(
 		if (err?.errors[0]?.reason === "cannotDownloadAbusiveFile") {
 			try {
 				data = (await drive.files.get({ fileId: id, alt: "media", acknowledgeAbuse: true })).data;
@@ -127,7 +127,7 @@ export async function downloadFile(id: Nullable<string>): Promise<Nullable<any>>
 			}
 		}
 	} finally {
-		resultHandler(actions.FILE_DOWNLOAD, { err });
+		resultHandler(actions.FILE_DOWNLOAD, { comment: ` for file/folder: ${dir}`, err });
 		return data;
 	}
 }

@@ -82,7 +82,7 @@ async function removeConflicts() {
 	for (const node of conflicts.remove) {
 		node.parent?.removeNode(node);
 		clg("Removing: " + node.location);
-		await removeFile(node.id);
+		await removeFile(node.id, node.location);
 	}
 }
 

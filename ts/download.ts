@@ -8,7 +8,7 @@ import { BackupFile, silentConsole, sleep, __maindir } from "./globals";
 import { initAuth } from "./utils/auth";
 import { downloadFile, folderExists, setDrive } from "./utils/driveQueries";
 import { readJSONFile } from "./utils/handleJSON";
-import { actions, resultHandler, setSilentLogs, updateLogs } from "./utils/logs";
+import { actions, resultHandler, setSilentLogs, updateLogs, warnErrors } from "./utils/logs";
 import { initBar, updateBar } from "./utils/progressBar";
 
 const { clg, setSilentConsole } = silentConsole;
@@ -37,22 +37,23 @@ const checkArgs = (): boolean => {
 
 const downloadRate: { successful: number; total: number } = { successful: 0, total: 0 };
 async function downloadNode(node: FileNode): Promise<void> {
-	let fileData;
+	let err, fileData;
 	try {
 		if (!node.isLeaf) {
 			await fs.mkdir(node.location, { recursive: true });
 		} else {
 			downloadRate.total++;
-			fileData = await downloadFile(node.id);
+			fileData = await downloadFile(node.id, node.location);
 			if (fileData == null) return;
 			await fs.writeFile(node.location, fileData);
 			clg(clc.blueBright("Downloaded file: ") + clc.greenBright(node.location));
 			downloadRate.successful++;
 		}
-	} catch (err) {
-		if (fileData != null) console.log(fileData);
-		resultHandler(actions.WRITE_LOC_FILE, { err });
-		console.log((!node.isLeaf ? "Folder" : "File") + " in " + node.location + " was not stored.");
+	} catch (error) {
+		err = error;
+		clg((!node.isLeaf ? "Folder" : "File") + " in " + node.location + " was not stored.");
+	} finally {
+		resultHandler(actions.WRITE_LOC_FILE, { comment: ` for file/folder ${node.location}`, err });
 	}
 }
 
@@ -71,13 +72,14 @@ async function downloadNode(node: FileNode): Promise<void> {
 
 		// Check backup folder exists in gdrive
 		let id = backupFile.ids[src];
-		const exists = await folderExists(id);
+		const exists = await folderExists(id, src);
 		if (!exists) {
-			console.log(clc.blueBright("Backup folder wasn't found.\n"));
+			clg(clc.blueBright("Backup folder wasn't found.\n"));
 			return;
 		}
 		await download(id, dest);
 		updateLogs(actions.BACKUP_DOWNLOAD, { comment: ` of directory: ${src}` });
+		warnErrors();
 	} catch (err) {
 		console.log(err);
 		return;

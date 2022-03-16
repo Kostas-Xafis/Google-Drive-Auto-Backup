@@ -103,10 +103,11 @@ node <command> <...> -ls
 node <command> <...> -l
 ```
 
-### **Note:** Errors will not be silenced neither in logs nor in the output.
+### **Note:** Errors will not be silenced in logs.
+---
 # **Bugs**
 ### If any unexpected **error** occurs then post an issue with the resulted error from the generated **logs.log** file (But remove any sensitive data first).
-
+---
 ## **Limitations**
 ### **1.** You can not exceed the free 15 GB storage cap, unless you pay a monthly subscription.
 ### **2.** You can make only 10.000 API calls daily (aka 10.000 file and folder uploads/downloads), unless again you pay a monthly subscription.

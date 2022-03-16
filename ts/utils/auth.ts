@@ -29,7 +29,7 @@ export async function initAuth(): Promise<OAuth2Client | void> {
 	try {
 		const { expiry_date } = JSON.parse(await fs.readFile(TOKEN_PATH, { encoding: "utf-8" }));
 		if (Date.now() >= expiry_date) await fs.unlink(TOKEN_PATH);
-	} catch (error) {}
+	} catch (e) {}
 	try {
 		//I want this to run even if the above trycatch catches an error
 		credentials = await fs.readFile(__maindir + "json/credentials.json", { encoding: "utf8" });
@@ -38,7 +38,7 @@ export async function initAuth(): Promise<OAuth2Client | void> {
 	} catch (error) {
 		err = error;
 	} finally {
-		resultHandler(actions.READ_LOC_FILE, { err });
+		resultHandler(actions.READ_LOC_FILE, { comment: ` for file ${__maindir + "json/credentials.json"}`, err });
 		if (err) return console.log("Error: Can't procced without a credentials.json file");
 	}
 }

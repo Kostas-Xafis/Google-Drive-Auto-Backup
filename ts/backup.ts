@@ -7,12 +7,12 @@ import { initAuth } from "./utils/auth";
 import { createFolder, folderExists, setDrive, uploadFile, uploadFolder } from "./utils/driveQueries";
 import { readJSONFile, writeJSONFile } from "./utils/handleJSON";
 import clc from "cli-color";
-import { actions, setSilentLogs, updateLogs } from "./utils/logs";
+import { actions, setSilentLogs, updateLogs, warnErrors } from "./utils/logs";
 import { initBar, updateBar } from "./utils/progressBar";
 
 const { clg, setSilentConsole } = silentConsole;
 const uploadThroughput = 15;
-function checkArgs(): boolean {
+const checkArgs = (): boolean => {
 	if (argv.length < 3) {
 		console.log("You need to specify your folder's path to backup");
 		return false;
@@ -28,13 +28,14 @@ function checkArgs(): boolean {
 		}
 	}
 	return true;
-}
+};
 
 async function uploadNode(node: FileNode) {
 	node.isLeaf ? await uploadFile(node) : await uploadFolder(node);
 }
 
 (async function () {
+	if (argv[1].includes("backupAll")) return; // Because i export the backup function the self calling function is created & called
 	if (!checkArgs()) return;
 	const dir = argv[2];
 	try {
@@ -49,6 +50,7 @@ async function uploadNode(node: FileNode) {
 		let id = await getBackupId(backupFile, dir);
 		await backup(await generateTree(dir, id));
 		updateLogs(actions.BACKUP_UPDATE, { comment: ` of directory: ${dir}` });
+		warnErrors();
 	} catch (err) {
 		console.log(err);
 		return;
@@ -59,10 +61,10 @@ async function uploadNode(node: FileNode) {
 async function getBackupId(backupFile: BackupFile, dir: string) {
 	const { ids } = backupFile;
 	let id = ids[dir];
-	const exists = await folderExists(id);
+	const exists = await folderExists(id, dir);
 	if (!exists) {
 		clg(clc.blueBright("Backup folder wasn't found.\tCreating one right now..."));
-		id = ids[dir] = await createFolder({ name: path.basename(dir) });
+		id = ids[dir] = await createFolder({ name: path.basename(dir) }, dir);
 		await writeJSONFile(__maindir + "json/backupFile.json", backupFile);
 	} else clg(clc.blueBright("Found backup in Google Drive: " + path.basename(dir)));
 	return id;
