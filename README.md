@@ -79,8 +79,11 @@ cd js
 #Backup or update a directory
 node backup <directory-to-backup> <...>
 
-#Update all your registered backup directories
-node backupAll <...>
+#Scheduled update for all your registered backup directories (Updates only if the appropriate time has passed)
+node backupAll
+
+#Unscheduled update for all your registered backup directories
+node backupAll -u
 ```
 ## **2. Remove backup**
 ```bash
@@ -111,5 +114,5 @@ node <command> <...> -l
 ## **Limitations**
 ### **1.** You can not exceed the free 15 GB storage cap, unless you pay a monthly subscription.
 ### **2.** You can make only 10.000 API calls daily (aka 10.000 file and folder uploads/downloads), unless again you pay a monthly subscription.
-### **3.** The automation script will only execute at start-up. If the appropriate time hasn't passed, then the update will happen at startup once the time has passed (aka it will check to update only at startup).
-### **4.** Currently the use of multiple gmail accounts is not supported. (Working on it) 
+### **3.** The automation script will only execute at start-up. If the appropriate time hasn't passed, then the update will happen at startup once the time has passed (aka it will check to update only at startup) (Working on it).
+### **4.** Currently the use of multiple gmail accounts is not supported. (Also working on it) 

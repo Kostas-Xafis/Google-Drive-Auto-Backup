@@ -120,6 +120,7 @@ export class FileNode {
 	}
 
 	updateSize(size: number) {
+		//Size bubbles up
 		this.size += size;
 		let parent = this.parent;
 		while (parent != null) {

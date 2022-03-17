@@ -44,7 +44,7 @@ async function uploadNode(node: FileNode) {
 		if (auth == null) return;
 		setDrive(auth);
 
-		// Read local backup file data && mimeTypes
+		// Read local backup file data
 		const backupFile: BackupFile = <BackupFile>Object.assign({}, await readJSONFile(__maindir + "json/backupFile.json"));
 
 		let id = await getBackupId(backupFile, dir);

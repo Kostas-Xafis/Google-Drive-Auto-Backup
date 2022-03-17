@@ -9,25 +9,29 @@ import { silentConsole } from "./globals";
 import clc from "cli-color";
 import { updateTimer } from "./utils/updateTimer";
 import { readFile } from "fs/promises";
+import { argv } from "process";
 
-const { clg, setSilentConsole } = silentConsole;
+const { setSilentConsole } = silentConsole;
 
 (async function () {
-	const prevUpdate = await getLastUpdateTime();
+	const scheduled = argv[2] === "-u" ? false : true;
 	setSilentLogs();
 	setSilentConsole();
 	try {
 		// Read local backup file data
 		const backupFile = <BackupFile>Object.assign({}, await readJSONFile(__maindir + "json/backupFile.json"));
 		const { update } = backupFile;
-		//@ts-ignore
-		const updateFreq: number = updateFrequency[update] || Number(update);
-		if (!updateFreq)
-			console.log(
-				"Invalid update frequency: " + update + ". Please make sure that your update field in the backupFile.json is valid"
-			);
-		if (updateFreq + prevUpdate > Math.floor(Date.now() / 1000)) return; //If the appropriate time hasn't passed
 
+		if (scheduled) {
+			const prevUpdate = await getLastUpdateTime();
+			//@ts-ignore
+			const updateFreq: number = updateFrequency[update] || Number(update);
+			if (!updateFreq)
+				console.log(
+					"Invalid update frequency: " + update + ". Please make sure that your update field in the backupFile.json is valid"
+				);
+			if (updateFreq + prevUpdate > Math.floor(Date.now() / 1000)) return; //If the appropriate time hasn't passed
+		}
 		// Authenticate & Connect with the Google Drive API
 		const auth = await initAuth();
 		if (auth == null) return;

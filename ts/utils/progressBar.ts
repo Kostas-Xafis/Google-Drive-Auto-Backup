@@ -3,7 +3,6 @@ import cliProgress, { SingleBar } from "cli-progress";
 import { sleep } from "../globals";
 
 const updateQueue: number[] = [];
-
 export async function initBar(totalsize: number, command: string, totalFiles: number) {
 	let size = 0;
 	let prevSize = 0;
@@ -21,10 +20,11 @@ export async function initBar(totalsize: number, command: string, totalFiles: nu
 	});
 
 	while (true) {
-		if (updateQueue.length !== 0) size += updateQueue.pop() || 0;
-
+		if (updateQueue.length !== 0) {
+			size += updateQueue.shift() || 0; // The || 0 is for ts
+			files++; //Files with 0 size wouldn't be counted so i put it here (fun time debugging 🙄🔫)
+		}
 		if (size === totalsize) {
-			files++;
 			bar.update(toKB(totalsize), { files });
 			break;
 		}
@@ -33,11 +33,12 @@ export async function initBar(totalsize: number, command: string, totalFiles: nu
 			continue;
 		}
 		prevSize = size;
-		files++;
 		bar.update(toKB(size), { files });
 	}
 }
 
 const toKB = (n: number) => Math.round(n / 1024);
 
-export const updateBar = (addSize: number) => updateQueue.push(addSize);
+export const updateBar = (addSize: number) => {
+	updateQueue.push(addSize);
+};

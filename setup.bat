@@ -8,3 +8,4 @@ node ./js/utils/updateTimer.js -set
 cd "%startup%"
 
 echo node %projectDir%\js\backupAll.js -s -ls > "backup.bat"
+

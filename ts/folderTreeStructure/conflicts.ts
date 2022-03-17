@@ -15,6 +15,7 @@ function searchName(str: string, arr: FileNode[]): Nullable<FileNode> {
 }
 
 export async function mergeConflicts() {
+	console.log(conflicts);
 	await relocationConflicts(); //It will find all the folder relocations and incrementaly add more removes/updates if they come
 	updateConflicts();
 	await removeConflicts();
@@ -59,7 +60,7 @@ function checkRelocation(node: FileNode): boolean {
 	conflicts.update = conflicts.update.filter(([_, node]) => node.location !== hfNode.location); // remove the highestFreqNode since we "updated" it in a way
 	if (highestFreq == 1) return true; //If it's a 100% match then there is no need to search for conflicts
 
-	searchConflicts(node, hfNode);
+	searchConflicts(node, hfNode); //But we still have to search for any conflicts inside the new "updated/relocated node"
 	return true;
 
 	//!This also could apply for large files... but, in that case i should compare SHAs
