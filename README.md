@@ -6,7 +6,7 @@
 ### 3. **Downloads** your files in the desired directory. 
 ### 4. **Maintains** your backuped folder structure both in Drive and after downloading it on your local machine.
 ### 5. Capable of storing **multiple** backups.
-
+### 6. It can be scheduled to update at any given time
 # **Setup**
 ### **1.** Run on your console:
 ```bash
@@ -58,15 +58,19 @@ tsc -build
 ---
 ### **5.** If you want your backups to update automatically after a specified amount of time then you should run the setup.(bat/sh) file from the project. (Note *: .sh for unix systems is not ready yet).
 ```bash
-./setup.bat
-```
-### In the backupFile.json file you have to add the field update like this:
-```json
-{
-    "excludePatterns":{},
-    "ids":{},
-    "update": "daily | weekly | biweekly | monthly | <specified amount of time in seconds>"  
-}
+#Options: HOURLY(1-23), DAILY(1-365), WEEKLY(1-52), MONTHLY(1-12)
+
+#Setup a scheduled update every 10 hours
+./setup.bat HOURLY 10
+
+#Setup a scheduled update every 15 days
+./setup.bat DAILY 15
+
+#Setup a scheduled update every 3 weeks
+./setup.bat WEEKLY 3
+
+#Setup a scheduled update every 2 months
+./setup.bat MONTHLY 3
 ```
 ---
 # **Run**
@@ -114,5 +118,5 @@ node <command> <...> -l
 ## **Limitations**
 ### **1.** You can not exceed the free 15 GB storage cap, unless you pay a monthly subscription.
 ### **2.** You can make only 10.000 API calls daily (aka 10.000 file and folder uploads/downloads), unless again you pay a monthly subscription.
-### **3.** The automation script will only execute at start-up. If the appropriate time hasn't passed, then the update will happen at startup once the time has passed (aka it will check to update only at startup) (Working on it).
-### **4.** Currently the use of multiple gmail accounts is not supported. (Also working on it) 
+### **3.** The automation part is currently only supported for Windows (Working on adding for linux & macOS)
+### **4.** Currently the use of multiple gmail accounts is not supported. (Also working on it)

@@ -2,17 +2,9 @@ import { resolve } from "path";
 
 export type Nullable<T> = T | null | undefined;
 
-export const updateFrequency = {
-	daily: 86400,
-	weekly: 86400 * 7,
-	biweekly: 86400 * 14,
-	monthly: 86400 * 30
-};
-export type UpdateFrequency = "daily" | "weekly" | "biweekly" | "monthly" | number;
 export type BackupFile = {
 	excludePatterns: { [k: string]: string[] };
 	ids: { [k: string]: string };
-	update: UpdateFrequency;
 };
 
 export type MimeTypes = {
