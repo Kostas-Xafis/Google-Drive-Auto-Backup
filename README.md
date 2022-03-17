@@ -83,11 +83,9 @@ cd js
 #Backup or update a directory
 node backup <directory-to-backup> <...>
 
-#Scheduled update for all your registered backup directories (Updates only if the appropriate time has passed)
+#Update for all your registered backup directories
 node backupAll
 
-#Unscheduled update for all your registered backup directories
-node backupAll -u
 ```
 ## **2. Remove backup**
 ```bash
