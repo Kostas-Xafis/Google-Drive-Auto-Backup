@@ -15,7 +15,8 @@ function searchName(str: string, arr: FileNode[]): Nullable<FileNode> {
 }
 
 export async function mergeConflicts() {
-	await relocationConflicts(); //It will find all the folder relocations and incrementaly add more removes/updates if they come
+	// await relocationConflicts();
+	//It will find all the folder relocations and incrementaly add more removes/updates if they come
 	updateConflicts();
 	await removeConflicts();
 }

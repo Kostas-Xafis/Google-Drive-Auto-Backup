@@ -12,31 +12,40 @@ set sch=
 if %1==HOURLY ( goto hour )
 if %1==DAILY ( goto day )
 if %1==WEEKLY ( goto week )
-if %1==MONTHLY ( goto month ) else ( goto wrongInput )
+if %1==MONTHLY ( goto month ) else ( 
+    echo Incorrect time type.
+    goto progexit
+)
 
 :hour
-if %2 geq 1 if %2 leq 23  ( set "sch=/SC HOURLY /MO %2" ) else ( echo Incorrect number of hours. )
+if %2 geq 1 if %2 leq 23  ( set "sch=/SC HOURLY /MO %2" ) else ( 
+    echo Incorrect number of hours.
+    goto progexit
+)
 goto ifexit
 
 :day
-if %2 geq 1 if %2 leq 365 ( set "sch=/SC DAILY /MO %2" ) else ( echo Incorrect number of days. )
+if %2 geq 1 if %2 leq 365 ( set "sch=/SC DAILY /MO %2" ) else ( 
+    echo Incorrect number of days.
+    goto progexit
+)
 goto ifexit
 
 :week
-if %2 geq 1 if %2 leq 52  ( set "sch=/SC WEEKLY /MO %2" ) else ( echo Incorrect number of weeks. )
+if %2 geq 1 if %2 leq 52  ( set "sch=/SC WEEKLY /MO %2" ) else ( 
+    echo Incorrect number of weeks.
+    goto progexit
+)
 goto ifexit
 
 :month
-if %2 geq 1 if %2 leq 12  ( set "sch=/SC MONTHLY /MO %2" ) else ( echo Incorrect number of months. )
+if %2 geq 1 if %2 leq 12  ( set "sch=/SC MONTHLY /MO %2" ) else ( 
+    echo Incorrect number of months.
+    goto progexit
+)
 goto ifexit
 
-:wrongInput
-echo Incorrect time type.
-goto progexit
-
 :ifexit
-
-if "%sch%" == "" ( goto progexit )
 
 SCHTASKS /Create /F /TN "Google Drive Auto Backup" /TR "%projectDir%/schedules/backup.bat" %sch%
 

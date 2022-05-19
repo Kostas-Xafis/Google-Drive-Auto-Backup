@@ -4,7 +4,7 @@ import { BackupFile, __maindir } from "./globals";
 import { initAuth } from "./utils/auth";
 import { folderExists, setDrive } from "./utils/driveQueries";
 import { readJSONFile } from "./utils/handleJSON";
-import { setSilentLogs, warnErrors } from "./utils/logs";
+import { actions, setSilentLogs, updateLogs, warnErrors } from "./utils/logs";
 import { silentConsole } from "./globals";
 import clc from "cli-color";
 
@@ -28,6 +28,7 @@ const { setSilentConsole } = silentConsole;
 			console.log(clc.cyanBright("Updating: " + dir));
 			await backup(await generateTree(dir, ids[dir]));
 		}
+		updateLogs(actions.FULL_BACKUP_UPDATE, {});
 		warnErrors();
 	} catch (err) {
 		console.log(err);
