@@ -3,10 +3,7 @@
 import { unlink } from "fs/promises";
 import { argv } from "process";
 import { BackupFile, __maindir } from "./globals";
-import { initAuth } from "./utils/auth";
-import { removeFile, setDrive } from "./utils/driveQueries";
-import { readJSONFile, writeJSONFile } from "./utils/handleJSON";
-import { actions, resultHandler, updateLogs, warnErrors } from "./utils/logs";
+import { initAuth, removeFile, setDrive, readJSONFile, writeJSONFile, actions, resultHandler, updateLogs, warnErrors } from "./utils"
 
 (async () => {
 	let err, errAction;

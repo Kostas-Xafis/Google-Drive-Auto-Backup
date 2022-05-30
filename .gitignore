@@ -1,8 +1,7 @@
-/node_modules
-/js
-/.vscode
+node_modules
+.vscode
 *.log
 *.txt
-/json/*
-!/json/mimetypes.json
+json/*
+!json/mimetypes.json
 /schedules

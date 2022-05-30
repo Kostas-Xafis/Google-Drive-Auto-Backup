@@ -1,15 +1,25 @@
 import path from "path";
+import clc from "cli-color";
 import { argv } from "process";
 import { generateTree, JSONFromTree } from "./folderTreeStructure/createTreeStructure";
 import { FileNode } from "./folderTreeStructure/node";
 import { BackupFile, silentConsole, sleep, __maindir } from "./globals";
-import { initAuth } from "./utils/auth";
-import { createFolder, folderExists, setDrive, uploadFile, uploadFolder } from "./utils/driveQueries";
-import { readJSONFile, writeJSONFile } from "./utils/handleJSON";
-import clc from "cli-color";
-import { actions, setSilentLogs, updateLogs, warnErrors } from "./utils/logs";
-import { initBar, updateBar } from "./utils/progressBar";
-
+import {
+	initBar,
+	updateBar,
+	actions,
+	setSilentLogs,
+	updateLogs,
+	warnErrors,
+	readJSONFile,
+	writeJSONFile,
+	createFolder,
+	folderExists,
+	setDrive,
+	uploadFile,
+	uploadFolder,
+	initAuth
+} from "./utils";
 const { clg, setSilentConsole } = silentConsole;
 const uploadThroughput = 15;
 const checkArgs = (): boolean => {
@@ -35,7 +45,7 @@ async function uploadNode(node: FileNode) {
 }
 
 (async function () {
-	if (argv[1].includes("backupAll")) return; // Because i export the backup function the self calling function is created & called
+	if (argv[1].includes("backupAll")) return; // Because i export the backup function, the self calling function is created & called
 	if (!checkArgs()) return;
 	const dir = argv[2];
 	try {

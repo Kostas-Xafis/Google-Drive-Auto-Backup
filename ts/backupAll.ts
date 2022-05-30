@@ -1,16 +1,13 @@
 import { backup } from "./backup";
 import { generateTree } from "./folderTreeStructure/createTreeStructure";
 import { BackupFile, __maindir } from "./globals";
-import { initAuth } from "./utils/auth";
-import { folderExists, setDrive } from "./utils/driveQueries";
-import { readJSONFile } from "./utils/handleJSON";
-import { actions, setSilentLogs, updateLogs, warnErrors } from "./utils/logs";
+import { initAuth, folderExists, setDrive, readJSONFile, actions, setSilentLogs, updateLogs, warnErrors } from "./utils";
 import { silentConsole } from "./globals";
 import clc from "cli-color";
 
 const { setSilentConsole } = silentConsole;
 
-(async function () {
+export const backupAll = async () => {
 	setSilentLogs();
 	setSilentConsole();
 	try {
@@ -34,7 +31,7 @@ const { setSilentConsole } = silentConsole;
 		console.log(err);
 		return;
 	}
-})();
+};
 
 async function getBackupIds(backup: BackupFile): Promise<{ [k: string]: string }> {
 	const { ids } = backup;

@@ -5,11 +5,20 @@ import { argv } from "process";
 import { treeFromJSON } from "./folderTreeStructure/createTreeStructure";
 import { FileNode } from "./folderTreeStructure/node";
 import { BackupFile, silentConsole, sleep, __maindir } from "./globals";
-import { initAuth } from "./utils/auth";
-import { downloadFile, folderExists, setDrive } from "./utils/driveQueries";
-import { readJSONFile } from "./utils/handleJSON";
-import { actions, resultHandler, setSilentLogs, updateLogs, warnErrors } from "./utils/logs";
-import { initBar, updateBar } from "./utils/progressBar";
+import {
+	readJSONFile,
+	initAuth,
+	downloadFile,
+	folderExists,
+	setDrive,
+	actions,
+	resultHandler,
+	setSilentLogs,
+	updateLogs,
+	warnErrors,
+	initBar,
+	updateBar
+} from "./utils";
 
 const { clg, setSilentConsole } = silentConsole;
 const downloadThroughput = 25;
