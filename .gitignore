@@ -4,4 +4,5 @@ node_modules
 *.txt
 json/*
 !json/mimetypes.json
-/schedules
+schedules
+js
