@@ -7,7 +7,7 @@ import clc from "cli-color";
 
 const { setSilentConsole } = silentConsole;
 
-export const backupAll = async () => {
+(async function backupAll() {
 	setSilentLogs();
 	setSilentConsole();
 	try {
@@ -24,6 +24,7 @@ export const backupAll = async () => {
 		for (const dir in ids) {
 			console.log(clc.cyanBright("Updating: " + dir));
 			await backup(await generateTree(dir, ids[dir]));
+			console.log("Hello");
 		}
 		updateLogs(actions.FULL_BACKUP_UPDATE, {});
 		warnErrors();
@@ -31,7 +32,7 @@ export const backupAll = async () => {
 		console.log(err);
 		return;
 	}
-};
+})();
 
 async function getBackupIds(backup: BackupFile): Promise<{ [k: string]: string }> {
 	const { ids } = backup;

@@ -74,6 +74,7 @@ export class FileNode {
 	}
 
 	changeLocation(dir: string): FileNode {
+		//Preserve file structure and replace root
 		const localLoc = this.location;
 		this.traverse(innerNode => {
 			innerNode.location = innerNode.location.replace(localLoc, dir);

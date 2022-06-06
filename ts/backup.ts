@@ -43,7 +43,6 @@ const checkArgs = (): boolean => {
 async function uploadNode(node: FileNode) {
 	node.isLeaf ? await uploadFile(node) : await uploadFolder(node);
 }
-
 (async function () {
 	if (argv[1].includes("backupAll")) return; // Because i export the backup function, the self calling function is created & called
 	if (!checkArgs()) return;
