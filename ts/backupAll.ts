@@ -24,7 +24,6 @@ const { setSilentConsole } = silentConsole;
 		for (const dir in ids) {
 			console.log(clc.cyanBright("Updating: " + dir));
 			await backup(await generateTree(dir, ids[dir]));
-			console.log("Hello");
 		}
 		updateLogs(actions.FULL_BACKUP_UPDATE, {});
 		warnErrors();

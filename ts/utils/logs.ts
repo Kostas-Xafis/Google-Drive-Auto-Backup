@@ -43,8 +43,8 @@ export function updateLogs(action: string, msg: LogMsg): void {
 		Date() +
 		"\n" +
 		action +
-		(err != null ? ":\t" + JSON.stringify(err, null, 2) : "") +
 		(comment != null ? comment : "") +
+		(err != null ? ":\t" + JSON.stringify(err, null, 2) : "") +
 		"\n\n";
 	fs.appendFile(__maindir + "/logs.log", str, { encoding: "utf-8" }, err => {
 		if (err) console.log(err);
@@ -56,7 +56,7 @@ export function resultHandler(id: string, msg: LogMsg): void {
 	if (!err && !silent) {
 		updateLogs("SUCCESSFUL action " + id, { comment });
 	} else if (err) {
-		updateLogs("ERROR at action " + id, { err });
+		updateLogs("ERROR at action " + id, { comment, err });
 		clg(clc.redBright("An error occured with action: ") + id);
 		errorCounter.errors++;
 	}

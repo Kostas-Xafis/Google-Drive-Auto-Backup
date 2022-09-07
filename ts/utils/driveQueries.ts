@@ -72,7 +72,7 @@ export async function removeFile(id: Nullable<string>, dir: string): Promise<voi
 	} catch (error) {
 		err = error;
 	} finally {
-		resultHandler(actions.FOLDER_DELETION, { comment: ` for file/folder: ${dir}`, err });
+		resultHandler(actions.FOLDER_DELETION, { comment: ` for file: ${dir}`, err });
 	}
 }
 
@@ -84,7 +84,7 @@ export async function relocateFile(node: FileNode): Promise<void> {
 	} catch (error) {
 		err = error;
 	} finally {
-		resultHandler(actions.FOLDER_UPDATE, { comment: ` for file/folder: ${node.location}`, err });
+		resultHandler(actions.FOLDER_UPDATE, { comment: ` for folder: ${node.location}`, err });
 	}
 }
 
@@ -127,7 +127,7 @@ export async function downloadFile(id: Nullable<string>, dir: string): Promise<N
 			}
 		}
 	} finally {
-		resultHandler(actions.FILE_DOWNLOAD, { comment: ` for file/folder: ${dir}`, err });
+		resultHandler(actions.FILE_DOWNLOAD, { comment: ` for file: ${dir}`, err });
 		return data;
 	}
 }

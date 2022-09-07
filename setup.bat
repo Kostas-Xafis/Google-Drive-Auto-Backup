@@ -2,8 +2,6 @@
 
 set projectDir=%CD%
 
-node ./js/utils/updateTimer.js -set 
-
 if not exist schedules ( mkdir schedules )
 echo node %projectDir%\js\backupAll.js -s -ls > "./schedules/backup.bat"
 

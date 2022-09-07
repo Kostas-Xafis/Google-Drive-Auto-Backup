@@ -91,6 +91,6 @@ async function getAccessToken(oAuth2Client: OAuth2Client): Promise<void> {
 		await fs.writeFile(TOKEN_PATH, JSON.stringify(token, null, 2), { encoding: "utf-8" });
 		clg(clc.yellow("Token stored to", __maindir + "json/token.json"));
 	} catch (err) {
-		resultHandler(actions.WRITE_LOC_FILE, { err });
+		resultHandler(actions.WRITE_LOC_FILE, { comment: "", err });
 	}
 }
