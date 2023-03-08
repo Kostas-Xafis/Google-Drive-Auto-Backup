@@ -7,7 +7,7 @@ import { BackupFile, silentConsole, sleep, __maindir } from "./globals";
 import {
 	initBar,
 	updateBar,
-	actions,
+	ACTIONS,
 	setSilentLogs,
 	updateLogs,
 	warnErrors,
@@ -54,11 +54,11 @@ async function uploadNode(node: FileNode) {
 		setDrive(auth);
 
 		// Read local backup file data
-		const backupFile: BackupFile = <BackupFile>Object.assign({}, await readJSONFile(__maindir + "json/backupFile.json"));
+		const backupFile = await readJSONFile<BackupFile>(__maindir + "json/backupFile.json");
 
 		let id = await getBackupId(backupFile, dir);
 		await backup(await generateTree(dir, id));
-		updateLogs(actions.BACKUP_UPDATE, { comment: ` of directory: ${dir}` });
+		updateLogs(ACTIONS.BACKUP_UPDATE, { comment: ` of directory: ${dir}` });
 		warnErrors();
 	} catch (err) {
 		console.log(err);

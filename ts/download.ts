@@ -11,7 +11,7 @@ import {
 	downloadFile,
 	folderExists,
 	setDrive,
-	actions,
+	ACTIONS,
 	resultHandler,
 	setSilentLogs,
 	updateLogs,
@@ -62,7 +62,7 @@ async function downloadNode(node: FileNode): Promise<void> {
 		err = error;
 		clg((!node.isLeaf ? "Folder" : "File") + " in " + node.location + " was not stored.");
 	} finally {
-		resultHandler(actions.WRITE_LOC_FILE, { comment: ` for file/folder ${node.location}`, err });
+		resultHandler(ACTIONS.WRITE_LOC_FILE, { comment: ` for file/folder ${node.location}`, err });
 	}
 }
 
@@ -77,7 +77,7 @@ async function downloadNode(node: FileNode): Promise<void> {
 		setDrive(auth);
 
 		// Read local backup file data && mimeTypes
-		const backupFile: BackupFile = <BackupFile>Object.assign({}, await readJSONFile(__maindir + "json/backupFile.json"));
+		const backupFile = await readJSONFile<BackupFile>(__maindir + "json/backupFile.json");
 
 		// Check backup folder exists in gdrive
 		let id = backupFile.ids[src];
@@ -87,7 +87,7 @@ async function downloadNode(node: FileNode): Promise<void> {
 			return;
 		}
 		await download(id, dest);
-		updateLogs(actions.BACKUP_DOWNLOAD, { comment: ` of directory: ${src}` });
+		updateLogs(ACTIONS.BACKUP_DOWNLOAD, { comment: ` of directory: ${src}` });
 		warnErrors();
 	} catch (err) {
 		console.log(err);

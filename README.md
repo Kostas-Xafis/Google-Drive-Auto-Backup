@@ -119,10 +119,10 @@ node backupAll
 
 ```bash
 #1.Remove local saved files for the backup
-node reset <directory-to-remove>
+node delete <directory-to-remove>
 
 #2.Both locally and in Drive
-node reset <directory-to-remove> -d
+node delete <directory-to-remove> -d
 ```
 
 ## **3. Download**

@@ -8,26 +8,22 @@ type nodeConstructor<T> = {
 	name: string; // The name of the file/folder
 	location: string; // The absolute path of the given file/folder
 	isLeaf: boolean; // Basically if it's a file or a folder
-	bupTime?: Nullable<number>; //The time that the file was backuped
-	modTime?: Nullable<number>; //The time that the file was locally modified
+	bupTime?: number; //The time that the file was backuped
+	modTime?: number; //The time that the file was locally modified
 	size: number;
 };
 
 type FileConstructor = nodeConstructor<FileNode>;
 type JSONConstructor = nodeConstructor<number>;
 
-export type JSONVertTree = {
-	[k: string]: FileNode;
-};
+export const NO_MOD_TIME = -1;
+
+export type JSONVertTree = Record<string, FileNode>;
 
 export type StorableJSONTree = {
-	nodes: {
-		[k: number]: JSONFileNode;
-	};
+	nodes: Record<number, JSONFileNode>;
 	length: number;
-	directories: {
-		[k: number]: string;
-	};
+	directories: Record<number, string>;
 };
 
 export class FileNode {
@@ -41,8 +37,8 @@ export class FileNode {
 	location: string;
 	isLeaf: boolean = false;
 
-	modTime: Nullable<number>;
-	bupTime: Nullable<number>;
+	modTime: number;
+	bupTime: number;
 	size: number;
 	constructor(arg: FileConstructor) {
 		this.parent = arg.parent;
@@ -52,8 +48,8 @@ export class FileNode {
 		this.location = arg.location;
 		this.leafs = arg?.leafs ? arg.leafs : [];
 		this.isLeaf = arg.isLeaf;
-		this.modTime = arg.modTime;
-		this.bupTime = arg.bupTime;
+		this.modTime = arg.modTime || NO_MOD_TIME;
+		this.bupTime = arg.bupTime || NO_MOD_TIME;
 		this.size = arg.size;
 	}
 
@@ -143,8 +139,8 @@ export class JSONFileNode {
 	location: string;
 	isLeaf: boolean = false;
 
-	modTime: Nullable<number>;
-	bupTime: Nullable<number>;
+	modTime: number;
+	bupTime: number;
 	size: number;
 	constructor(arg: JSONConstructor) {
 		this.parent = arg.parent;
@@ -154,8 +150,8 @@ export class JSONFileNode {
 		this.location = arg.location;
 		this.leafs = arg?.leafs ? arg.leafs : [];
 		this.isLeaf = arg.isLeaf;
-		this.modTime = arg.modTime;
-		this.bupTime = arg.bupTime;
+		this.modTime = arg.modTime || NO_MOD_TIME;
+		this.bupTime = arg.bupTime || NO_MOD_TIME;
 		this.size = arg.size;
 	}
 

@@ -1,16 +1,16 @@
 import { writeFile, readFile, access, mkdir } from "fs/promises";
 import { dirname } from "path";
-import { actions, resultHandler } from "./logs";
+import { ACTIONS, resultHandler } from "./logs";
 import { silentConsole } from "../globals";
 const { clg } = silentConsole;
-export async function readJSONFile(dir: string): Promise<any> {
+export async function readJSONFile<T>(dir: string): Promise<T> {
 	let err, data;
 	try {
 		data = JSON.parse(await readFile(dir, { encoding: "utf-8" }));
 	} catch (error) {
 		err = error;
 	} finally {
-		resultHandler(actions.READ_LOC_FILE, { comment: ` for file: ${dir}`, err });
+		resultHandler(ACTIONS.READ_LOC_FILE, { comment: ` for file: ${dir}`, err });
 		return data;
 	}
 }
@@ -28,6 +28,6 @@ export async function writeJSONFile(dir: string, obj: object): Promise<void> {
 			err = error;
 			clg("Couldn't write to " + dir);
 		}
-		resultHandler(actions.WRITE_LOC_FILE, { comment: ` for file: ${dir}`, err });
+		resultHandler(ACTIONS.WRITE_LOC_FILE, { comment: ` for file: ${dir}`, err });
 	}
 }

@@ -1,5 +1,5 @@
 import clc from "cli-color";
-import cliProgress, { SingleBar } from "cli-progress";
+import cliProgress from "cli-progress";
 import { sleep } from "../globals";
 
 const updateQueue: number[] = [];

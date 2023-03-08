@@ -1,7 +1,7 @@
 import { backup } from "./backup";
 import { generateTree } from "./folderTreeStructure/createTreeStructure";
 import { BackupFile, __maindir } from "./globals";
-import { initAuth, folderExists, setDrive, readJSONFile, actions, setSilentLogs, updateLogs, warnErrors } from "./utils";
+import { initAuth, folderExists, setDrive, readJSONFile, ACTIONS, setSilentLogs, updateLogs, warnErrors } from "./utils";
 import { silentConsole } from "./globals";
 import clc from "cli-color";
 
@@ -12,7 +12,7 @@ const { setSilentConsole } = silentConsole;
 	setSilentConsole();
 	try {
 		// Read local backup file data
-		const backupFile = <BackupFile>Object.assign({}, await readJSONFile(__maindir + "json/backupFile.json"));
+		const backupFile = await readJSONFile<BackupFile>(__maindir + "json/backupFile.json");
 
 		// Authenticate & Connect with the Google Drive API
 		const auth = await initAuth();
@@ -25,7 +25,7 @@ const { setSilentConsole } = silentConsole;
 			console.log(clc.cyanBright("Updating: " + dir));
 			await backup(await generateTree(dir, ids[dir]));
 		}
-		updateLogs(actions.FULL_BACKUP_UPDATE, {});
+		updateLogs(ACTIONS.FULL_BACKUP_UPDATE, {});
 		warnErrors();
 	} catch (err) {
 		console.log(err);

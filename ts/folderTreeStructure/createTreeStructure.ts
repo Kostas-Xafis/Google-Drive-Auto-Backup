@@ -1,8 +1,8 @@
-import { FileNode, JSONFileNode, JSONVertTree } from "./node";
+import { FileNode, JSONFileNode, JSONVertTree, StorableJSONTree } from "./node";
 import fs, { Dirent, statSync } from "fs";
 import { BackupFile, __maindir } from "../globals";
 import { readJSONFile, writeJSONFile } from "../utils/handleJSON";
-import micromatch from "micromatch";
+import { isMatch } from "micromatch";
 import { mergeConflicts, searchConflicts } from "./conflicts";
 import path from "path";
 
@@ -14,7 +14,7 @@ type CompleteTree = {
 };
 
 const createTree = async (location: string): Promise<FileNode> => {
-	const backup: BackupFile = await readJSONFile(__maindir + "json/backupFile.json");
+	const backup = await readJSONFile<BackupFile>(__maindir + "json/backupFile.json");
 	excludePatterns = backup.excludePatterns[location] || backup.excludePatterns["*"] || [];
 	const root: FileNode = new FileNode({
 		id: backup.ids[location],
@@ -33,7 +33,7 @@ const searchNode = (parent: FileNode): void => {
 	if (dirContent.length != 0) {
 		dirContent.forEach((entry: Dirent) => {
 			const location = parent.location + "/" + entry.name;
-			if (micromatch.isMatch(location, excludePatterns)) return;
+			if (isMatch(location, excludePatterns)) return;
 			//Add directories and files to node
 			const isLeaf = !entry.isDirectory();
 			const size = isLeaf ? statSync(location).size : 0;
@@ -47,8 +47,8 @@ const searchNode = (parent: FileNode): void => {
 };
 
 export const treeFromJSON = async (id: string): Promise<CompleteTree> => {
-	const storedJsonTree = Object.assign({}, await readJSONFile(__maindir + `json/trees/${id}.json`));
-	const vertTree: JSONVertTree = {};
+	const storedJsonTree = await readJSONFile<StorableJSONTree>(__maindir + `json/trees/${id}.json`);
+	const vertTree = {} as JSONVertTree;
 	JSONFileNode.setStorableJSONVertTree(storedJsonTree);
 	const tree = new JSONFileNode(storedJsonTree.nodes[0]).toFileNode(vertTree);
 	JSONFileNode.clearStorableJSONVertTree();

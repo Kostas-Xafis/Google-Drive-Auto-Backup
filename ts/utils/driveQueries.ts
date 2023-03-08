@@ -2,18 +2,18 @@ import fs from "fs";
 import { OAuth2Client } from "google-auth-library";
 import { drive_v3, google } from "googleapis";
 import path from "path";
-import { FileNode } from "../folderTreeStructure/node";
+import { FileNode, NO_MOD_TIME } from "../folderTreeStructure/node";
 import { silentConsole, MediaType, MimeTypes, Nullable, __maindir } from "../globals";
 import { getModificationTimeFromFile } from "./fileModT";
 import { readJSONFile } from "./handleJSON";
-import { actions, resultHandler } from "./logs";
+import { ACTIONS, resultHandler } from "./logs";
 import clc from "cli-color";
 
 let drive: drive_v3.Drive;
 const { clg } = silentConsole;
 const mimeTypes: MimeTypes = {};
 (async function () {
-	Object.assign({}, await readJSONFile(__maindir + "json/mimetypes.json"));
+	Object.assign(mimeTypes, await readJSONFile<MimeTypes>(__maindir + "json/mimetypes.json"));
 })();
 
 export function setDrive(auth: OAuth2Client) {
@@ -32,7 +32,7 @@ export async function createFolder(folder: drive_v3.Schema$File, dir: string): P
 	} catch (error) {
 		err = error;
 	} finally {
-		resultHandler(actions.FOLDER_CREATION, { comment: ` for folder: ${dir}`, err });
+		resultHandler(ACTIONS.FOLDER_CREATION, { comment: ` for folder: ${dir}`, err });
 		return data?.id ? data.id : "";
 	}
 }
@@ -45,7 +45,7 @@ export async function createFile(metadata: drive_v3.Schema$File, file: MediaType
 	} catch (error) {
 		err = error;
 	} finally {
-		resultHandler(actions.FILE_CREATION, { comment: ` for file: ${dir}`, err });
+		resultHandler(ACTIONS.FILE_CREATION, { comment: ` for file: ${dir}`, err });
 		return data?.id;
 	}
 }
@@ -58,7 +58,7 @@ export async function folderExists(id: Nullable<string>, dir: string): Promise<b
 	} catch (error) {
 		err = error;
 	} finally {
-		resultHandler(actions.FOLDER_SEARCH, { comment: ` for folder: ${dir}`, err });
+		resultHandler(ACTIONS.FOLDER_SEARCH, { comment: ` for folder: ${dir}`, err });
 		if (err) return false;
 		return true;
 	}
@@ -72,7 +72,7 @@ export async function removeFile(id: Nullable<string>, dir: string): Promise<voi
 	} catch (error) {
 		err = error;
 	} finally {
-		resultHandler(actions.FOLDER_DELETION, { comment: ` for file: ${dir}`, err });
+		resultHandler(ACTIONS.FOLDER_DELETION, { comment: ` for file: ${dir}`, err });
 	}
 }
 
@@ -84,13 +84,13 @@ export async function relocateFile(node: FileNode): Promise<void> {
 	} catch (error) {
 		err = error;
 	} finally {
-		resultHandler(actions.FOLDER_UPDATE, { comment: ` for folder: ${node.location}`, err });
+		resultHandler(ACTIONS.FOLDER_UPDATE, { comment: ` for folder: ${node.location}`, err });
 	}
 }
 
 export async function uploadFile(node: FileNode): Promise<void> {
 	const modTime = Math.round(await getModificationTimeFromFile(node.location));
-	if (node.modTime != null && modTime <= node.modTime) return;
+	if (node.modTime != NO_MOD_TIME && modTime <= node.modTime) return;
 	if (node.id != null) await removeFile(node.id, node.location);
 	node.id = await createFile(
 		{ name: node.name, parents: [node.parent?.id ? node.parent.id : ""] },
@@ -127,7 +127,7 @@ export async function downloadFile(id: Nullable<string>, dir: string): Promise<N
 			}
 		}
 	} finally {
-		resultHandler(actions.FILE_DOWNLOAD, { comment: ` for file: ${dir}`, err });
+		resultHandler(ACTIONS.FILE_DOWNLOAD, { comment: ` for file: ${dir}`, err });
 		return data;
 	}
 }

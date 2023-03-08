@@ -1,9 +1,8 @@
-import { Nullable, __maindir } from "../globals";
+import { Nullable, __maindir, silentConsole } from "../globals";
 import fs from "fs";
 import clc from "cli-color";
-import { silentConsole } from "../globals";
 const { clg } = silentConsole;
-export const enum actions {
+export const enum ACTIONS {
 	FOLDER_CREATION = "FOLDER CREATION",
 	FOLDER_DELETION = "FOLDER DELETION",
 	FOLDER_SEARCH = "FOLDER SEARCH",

@@ -1,6 +1,6 @@
 import fs from "fs/promises";
 import readline from "readline";
-import { actions, resultHandler } from "./logs";
+import { ACTIONS, resultHandler } from "./logs";
 import { google } from "googleapis";
 import { Credentials, OAuth2Client } from "google-auth-library";
 import { silentConsole, __maindir } from "../globals";
@@ -38,7 +38,7 @@ export async function initAuth(): Promise<OAuth2Client | void> {
 	} catch (error) {
 		err = error;
 	} finally {
-		resultHandler(actions.READ_LOC_FILE, { comment: ` for file ${__maindir + "json/credentials.json"}`, err });
+		resultHandler(ACTIONS.READ_LOC_FILE, { comment: ` for file ${__maindir + "json/credentials.json"}`, err });
 		if (err) return console.log("Error: Can't procced without a credentials.json file");
 	}
 }
@@ -91,6 +91,6 @@ async function getAccessToken(oAuth2Client: OAuth2Client): Promise<void> {
 		await fs.writeFile(TOKEN_PATH, JSON.stringify(token, null, 2), { encoding: "utf-8" });
 		clg(clc.yellow("Token stored to", __maindir + "json/token.json"));
 	} catch (err) {
-		resultHandler(actions.WRITE_LOC_FILE, { comment: "", err });
+		resultHandler(ACTIONS.WRITE_LOC_FILE, { comment: "", err });
 	}
 }
